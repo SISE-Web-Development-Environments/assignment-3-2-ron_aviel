@@ -1,0 +1,30 @@
+{
+  "name": "assignment-3-2-ron_aviel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "recipesController.js",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "cookie-parser": "^1.4.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "modules": "^0.4.0",
+    "morgan": "^1.10.0",
+    "node": "^14.2.0",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SISE-Web-Development-Environments/assignment-3-2-ron_aviel.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SISE-Web-Development-Environments/assignment-3-2-ron_aviel/issues"
+  },
+  "homepage": "https://github.com/SISE-Web-Development-Environments/assignment-3-2-ron_aviel#readme"
+}
