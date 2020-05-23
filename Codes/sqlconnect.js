@@ -1,5 +1,5 @@
-require("dotenv").config();
-const sql = require("mssql");
+require("./node_modules/dotenv").config();
+const sql = require("./node_modules/mssql");
 const config = {
     user: process.env.tedious_userName,
     password: process.env.tedious_password,

@@ -1,86 +1,67 @@
-//#region global imports
 require("dotenv").config();
-const apiaxios = require("axios");
 //#region express configures
 var express = require("express");
 var path = require("path");
-var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+const session = require("client-sessions");
+const DButils = require("./modules/DButils");
 
 var app = express();
 app.use(logger("dev")); //logger
 app.use(express.json()); // parse application/json
-const cookies_options = {
-  maxAge: 1000 * 60 * 15, // would expire after 15 minutes
-  httpOnly: true, // The cookie only accessible by the web server
-  signed: true // Indicates if the cookie should be signed
-};
+app.use(
+  session({
+    cookieName: "session", // the cookie key name
+    secret: process.env.COOKIE_SECRET, // the encryption key
+    duration: 20 * 60 * 1000, // expired after 20 sec
+    activeDuration: 0 // if expiresIn < activeDuration,
+    //the session will be extended by activeDuration milliseconds
+  })
+);
 app.use(express.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
-app.use(cookieParser(process.env.COOKIE_SECRET, cookies_options)); //Parse the cookies into the req.cookies
 app.use(express.static(path.join(__dirname, "public"))); //To serve static files such as images, CSS files, and JavaScript files
 
 var port = process.env.PORT || "3000";
 //#endregion
+const user = require("./routes/user");
+const profile = require("./routes/profile");
+const recipes = require("./routes/recipes");
 
-const db = require("./db");
-
-app.post("/users/Register", (req, res) => {
-  // parameters exists
-  // valid parameters
-  // username exists
-  if (db.users.find((x) => x.name === req.body.name))
-    throw new Error("Name exists");
-  // add the new username
-  var newUser = { ...req.body, id: db.length };
-  db.users.push(newUser);
-  res.status(201).send("user created");
-  // db.push(req.body)
-});
-
-app.post("/users/Login", (req, res) => {
-  // check that username exists
-  if (!db.users.find((x) => x.name === req.body.name))
-    throw new Error("password or Name is not correct");
-  // check that the password is correct
-  var user = db.users.find((x) => x.name === req.body.name);
-  if (req.body.password !== user.password) {
-    throw new Error("password or Name is not correct");
+//#region cookie middleware
+app.use(function (req, res, next) {
+  if (req.session && req.session.user_id) {
+    DButils.execQuery("SELECT user_id FROM users")
+      .then((users) => {
+        if (users.find((x) => x.user_id === req.session.user_id)) {
+          req.user_id = req.session.user_id;
+        }
+        next();
+      })
+      .catch((error) => next(error));
+  } else {
+    next();
   }
-
-  // Set cookie
-  res.cookie("cookieName", "cookieValue", cookies_options); // options is optional
-
-  // return cookie
-  res.status(200).send("login succeeded");
 });
-// get recipe by ID is Working !!!!!!!
-app.get("/recipe/getRecipe", (req, res) => {
-    // get id from client
-    console.log(req.query.id);
-    // axios: request spooncular 
-    apiaxios.get(`https://api.spoonacular.com/recipes/${req.query.id}/information`,
-     {params: {apiKey: process.env.spooncular_apiKey}})
-     .then((result) => {
-         // i can resend specific data also , the example is below 
-         
-         // vegeterian:result.data.vegeterain , vegan:result.data.vegan  instead of result.data .
-        // res.send(result.data); // whole data example 
-         const u_result={
-            vegeterian:result.data.vegeterain ,
-            vegan:result.data.vegan
-         }
-         res.send (u_result);
-        });
-    });
+//#endregion
 
-app.use((err, req, res, next) => {
-  console.log(err.message);
+app.get("/", (req, res) => res.send("welcome"));
 
-  res.status(500).json({
-    message: err.message
-  });
+app.use("/user", user);
+app.use("/profile", profile);
+app.use("/recipes", recipes);
+
+app.use(function (err, req, res, next) {
+  console.error(err);
+  res.status(err.status || 500).send({ message: err.message, success: false });
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+const server = app.listen(port, () => {
+  console.log(`Server listen on port ${port}`);
+});
+
+process.on("SIGINT", function () {
+  if (server) {
+    server.close(() => console.log("server closed"));
+  }
+  process.exit();
 });
