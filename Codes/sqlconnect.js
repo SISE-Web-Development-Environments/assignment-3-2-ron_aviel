@@ -8,7 +8,7 @@ const config = {
 };
 sql.connect(config)
 .then((pool) => {
-    return pool.request().query("Select * from dbo.Webusers");
+    return pool.request().query("Select * from dbo.users");
 })
 .then((result) => {
     console.log(result);
