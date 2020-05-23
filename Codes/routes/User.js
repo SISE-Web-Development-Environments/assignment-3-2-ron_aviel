@@ -15,10 +15,10 @@
 //         this.recipeInMaking=recipeInMaking;
 //     }
 // }
-var express = require("./node_modules/express");
+var express = require("express");
 var router = express.Router();
-const DButils = require("../../modules/DButils");
-const bcrypt = require("./node_modules/bcrypt");
+const DButils = require("./modules/DButils");
+const bcrypt = require("bcrypt");
 
 router.post("/Register", async (req, res, next) => {
   try {

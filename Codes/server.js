@@ -1,4 +1,4 @@
-var express = require('./node_modules/express');
+var express = require('express');
 const app = express();
 
 app.get('/', (req, res) => {

@@ -13,9 +13,9 @@
 //         this.userId=userId;
 //     }
 // }
-var express = require("./node_modules/express");
+var express = require("express");
 var router = express.Router();
-const axios = require("./node_modules/axios");
+const axios = require("axios");
 
 const api_domain = "https://api.spoonacular.com/recipes";
 
