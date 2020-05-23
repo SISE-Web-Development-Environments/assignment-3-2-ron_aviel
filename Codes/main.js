@@ -4,7 +4,7 @@ var express = require("express");
 var path = require("path");
 var logger = require("morgan");
 const session = require("client-sessions");
-const DButils = require(".\modules\DButils");
+const DButils = require("./sqlconnect");
 var app = express();
 app.use(logger("dev")); //logger
 app.use(express.json()); // parse application/json
@@ -20,9 +20,9 @@ app.use(
 app.use(express.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
 app.use(express.static(path.join(__dirname, "public"))); //To serve static files such as images, CSS files, and JavaScript files
 
-var port = process.env.PORT || "3000";
+var port = process.env.PORT || "5000";
 //#endregion
-const user = require("./routes/user");
+const user = require("./routes/User");
 const profile = require("./routes/profile");
 const recipes = require("./routes/recipes");
 

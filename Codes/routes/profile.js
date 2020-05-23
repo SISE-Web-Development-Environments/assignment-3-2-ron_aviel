@@ -1,6 +1,6 @@
-var express = require("./node_modules/express");
+var express = require("express");
 var router = express.Router();
-const DButils = require("../../modules/DButils");
+const DButils = require("c:/Users/ronsh/assignment-3-2-ron_aviel/Codes/sqlconnect");
 
 router.use(function requireLogin(req, res, next) {
   if (!req.user_id) {
@@ -9,13 +9,13 @@ router.use(function requireLogin(req, res, next) {
     next();
   }
 });
-
+// simple check of cookie
 //#region global simple
 // router.use((req, res, next) => {
 //   const { cookie } = req.body;
 
 //   if (cookie && cookie.valid) {
-//     DButils.execQuery("SELECT username FROM users")
+//    DButils.execQuery("SELECT username FROM users")
 //       .then((users) => {
 //         if (users.find((e) => e.username === cookie.username))
 //           req.username = cookie.username;

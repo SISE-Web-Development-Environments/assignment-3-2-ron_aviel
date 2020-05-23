@@ -5,6 +5,7 @@
   "main": "recipesController.js",
   "dependencies": {
     "axios": "^0.19.2",
+    "bcrypt": "^4.0.1",
     "client-sessions": "^0.8.0",
     "cookie-parser": "^1.4.5",
     "db": "^2.0.0",
@@ -18,7 +19,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "Start_main": "nodemon Codes/main.js"
   },
   "repository": {
     "type": "git",
