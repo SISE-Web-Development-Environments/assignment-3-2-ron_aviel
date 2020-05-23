@@ -1,6 +1,6 @@
 //#region global imports
 require("dotenv").config();
-const axios = require("axios");
+const apiaxios = require("axios");
 //#region express configures
 var express = require("express");
 var path = require("path");
@@ -53,21 +53,25 @@ app.post("/users/Login", (req, res) => {
   // return cookie
   res.status(200).send("login succeeded");
 });
-
+// get recipe by ID is Working !!!!!!!
 app.get("/recipe/getRecipe", (req, res) => {
-  // get id from client
-  console.log(req.query.id);
-  // axios: request spooncular api
-  axios
-    .get(`https://api.spoonacular.com/recipes/${req.query.id}/information`, {
-      params: {
-        apiKey: process.env.spooncular_apiKey
-      }
-    })
-    .then((result) => {
-      res.send(result.data);
+    // get id from client
+    console.log(req.query.id);
+    // axios: request spooncular 
+    apiaxios.get(`https://api.spoonacular.com/recipes/${req.query.id}/information`,
+     {params: {apiKey: process.env.spooncular_apiKey}})
+     .then((result) => {
+         // i can resend specific data also , the example is below 
+         
+         // vegeterian:result.data.vegeterain , vegan:result.data.vegan  instead of result.data .
+        // res.send(result.data); // whole data example 
+         const u_result={
+            vegeterian:result.data.vegeterain ,
+            vegan:result.data.vegan
+         }
+         res.send (u_result);
+        });
     });
-});
 
 app.use((err, req, res, next) => {
   console.log(err.message);

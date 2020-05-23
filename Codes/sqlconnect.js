@@ -8,7 +8,7 @@ const config = {
 };
 sql.connect(config)
 .then((pool) => {
-    return pool.request().query("Select * from dbo.users");
+    return pool.request().query("Select * from dbo.users where user_id=2 ");
 })
 .then((result) => {
     console.log(result);
