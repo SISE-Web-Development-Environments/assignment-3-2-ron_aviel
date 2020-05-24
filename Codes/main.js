@@ -22,32 +22,17 @@ app.use(express.static(path.join(__dirname, "public"))); //To serve static files
 
 var port = process.env.PORT || "5000";
 //#endregion
-const user = require("./routes/User");
-const profile = require("./routes/profile");
-const recipes = require("./routes/recipes");
+const user = require("./routes/user");
+const recipeInMaking = require("./routes/recipeInMaking");
+const meal = require("./routes/meal");
+const recipe = require("./routes/recipe");
 
-//#region cookie middleware
-app.use(function (req, res, next) {
-  if (req.session && req.session.user_id) {
-    DButils.execQuery("SELECT user_id FROM users")
-      .then((users) => {
-        if (users.find((x) => x.user_id === req.session.user_id)) {
-          req.user_id = req.session.user_id;
-        }
-        next();
-      })
-      .catch((error) => next(error));
-  } else {
-    next();
-  }
-});
-//#endregion
 
-app.get("/", (req, res) => res.send("welcome"));
 
 app.use("/user", user);
-app.use("/profile", profile);
-app.use("/recipes", recipes);
+app.use("/recipeInMaking", recipeInMaking);
+app.use("/recipes", recipe);
+app.use("/meal", meal);
 
 app.use(function (err, req, res, next) {
   console.error(err);

@@ -1,12 +1,3 @@
-// class recipesInMaking{
-//     constructor(id,name,steps,progression){
-//         this.id=id;
-//         this.name=name;
-//         this.steps=steps;
-//         this.progression=progression;
-//     }
-// }
-
 
 var express = require("express");
 var router = express.Router();
@@ -14,21 +5,29 @@ const DButils = require("c:/Users/ronsh/assignment-3-2-ron_aviel/Codes/sqlconnec
 const bcrypt = require("bcrypt");
 
 
-//RecipeInMaking REST requests
+//Recipe REST requsts
 
-app.get('/:id:', (req, res) => {
+app.get('/:id', (req, res) => {
+	res.status(200).send("Hello World");
+});
+
+app.get('/:name', (req, res) => {
+	res.status(200).send("Hello World");
+});
+
+app.get('/getRandomRecipes', (req, res) => {
+	res.status(200).send("Hello World");
+});
+
+app.get('/getFamilyRecipes', (req, res) => {
+	res.status(200).send("Hello World");
+});
+
+app.get('/getCreatedByUser/:userID', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
 app.post('/', (req, res) => {
-	res.status(200).send("Hello World");
-});
-
-app.put('/:id', (req, res) => {
-	res.status(200).send("Hello World");
-});
-
-app.delete('/:id', (req, res) => {
 	res.status(200).send("Hello World");
 });
 

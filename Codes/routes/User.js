@@ -20,6 +20,60 @@ var router = express.Router();
 const DButils = require("c:/Users/ronsh/assignment-3-2-ron_aviel/Codes/sqlconnect");
 const bcrypt = require("bcrypt");
 
+
+//#region cookie middleware
+app.use(function (req, res, next) {
+  if (req.session && req.session.user_id) {
+    DButils.execQuery("SELECT user_id FROM users")
+      .then((users) => {
+        if (users.find((x) => x.user_id === req.session.user_id)) {
+          req.user_id = req.session.user_id;
+        }
+        next();
+      })
+      .catch((error) => next(error));
+  } else {
+    next();
+  }
+});
+//#endregion
+
+
+//User REST requests
+
+app.get('/login', (req, res) => {
+	res.status(200).send("Hello World");
+});
+
+app.get('/logout', (req, res) => {
+	res.status(200).send("Hello World");
+});
+
+app.get('/GetFavoriteRecipes/:id', (req, res) => {
+	res.status(200).send("Hello World");
+});
+
+app.get('/getLastSeen/:id', (req, res) => {
+	res.status(200).send("Hello World");
+});
+
+app.get('/getMeal/:userID', (req, res) => {
+	res.status(200).send("Hello World");
+});
+
+app.post('/', (req, res) => {
+	res.status(200).send("Hello World");
+});
+
+app.put('/updateLastSeenRecipes', (req, res) => {
+	res.status(200).send("Hello World");
+});
+
+app.put('/updateFavoriteRecipes', (req, res) => {
+	res.status(200).send("Hello World");
+});
+
+
 router.post("/Register", async (req, res, next) => {
   try {
     // parameters exists
