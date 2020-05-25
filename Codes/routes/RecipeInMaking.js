@@ -1,11 +1,4 @@
-// class recipesInMaking{
-//     constructor(id,name,steps,progression){
-//         this.id=id;
-//         this.name=name;
-//         this.steps=steps;
-//         this.progression=progression;
-//     }
-// }
+
 
 
 var express = require("express");
@@ -16,19 +9,19 @@ const bcrypt = require("bcrypt");
 
 //RecipeInMaking REST requests
 
-app.get('/:id:', (req, res) => {
+router.get('/:id:', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-app.post('/', (req, res) => {
+router.post('/', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-app.put('/:id', (req, res) => {
+router.put('/:id', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-app.delete('/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
 	res.status(200).send("Hello World");
 });
 

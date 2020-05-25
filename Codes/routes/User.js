@@ -1,28 +1,12 @@
-// class User{
-//     constructor(id,mealId,username,firstName,lastName,country,password,email,photoLink,favorites,lastSeen,mealAmmount,recipeInMaking){
-//         this.id=id;
-//         this.mealId=mealId;
-//         this.username=username;
-//         this.firstName=firstName;
-//         this.lastName=lastName;
-//         this.country=country;
-//         this.password=password;
-//         this.email=email;
-//         this.photoLink=photoLink;
-//         this.favorites=favorites;
-//         this.lastSeen=lastSeen;
-//         this.mealAmmount=mealAmmount;
-//         this.recipeInMaking=recipeInMaking;
-//     }
-// }
+
 var express = require("express");
 var router = express.Router();
-const DButils = require("c:/Users/ronsh/assignment-3-2-ron_aviel/Codes/sqlconnect");
+const DButils = require("Codes/sqlconnect");
 const bcrypt = require("bcrypt");
 
 
 //#region cookie middleware
-app.use(function (req, res, next) {
+router.use(function (req, res, next) {
   if (req.session && req.session.user_id) {
     DButils.execQuery("SELECT user_id FROM users")
       .then((users) => {
@@ -41,35 +25,35 @@ app.use(function (req, res, next) {
 
 //User REST requests
 
-app.get('/login', (req, res) => {
+router.get('/login', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-app.get('/logout', (req, res) => {
+router.get('/logout', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-app.get('/GetFavoriteRecipes/:id', (req, res) => {
+router.get('/GetFavoriteRecipes/:id', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-app.get('/getLastSeen/:id', (req, res) => {
+router.get('/getLastSeen/:id', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-app.get('/getMeal/:userID', (req, res) => {
+router.get('/getMeal/:userID', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-app.post('/', (req, res) => {
+router.post('/', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-app.put('/updateLastSeenRecipes', (req, res) => {
+router.put('/updateLastSeenRecipes', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-app.put('/updateFavoriteRecipes', (req, res) => {
+router.put('/updateFavoriteRecipes', (req, res) => {
 	res.status(200).send("Hello World");
 });
 

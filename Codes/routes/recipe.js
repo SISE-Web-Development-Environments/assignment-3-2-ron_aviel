@@ -7,27 +7,27 @@ const bcrypt = require("bcrypt");
 
 //Recipe REST requsts
 
-app.get('/:id', (req, res) => {
+router.get('/:id', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-app.get('/:name', (req, res) => {
+router.get('/:name', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-app.get('/getRandomRecipes', (req, res) => {
+router.get('/getRandomRecipes', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-app.get('/getFamilyRecipes', (req, res) => {
+router.get('/getFamilyRecipes', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-app.get('/getCreatedByUser/:userID', (req, res) => {
+router.get('/getCreatedByUser/:userID', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-app.post('/', (req, res) => {
+router.post('/', (req, res) => {
 	res.status(200).send("Hello World");
 });
 

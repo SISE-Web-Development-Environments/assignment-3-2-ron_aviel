@@ -1,9 +1,3 @@
-// class Meal{
-//     constructor(id,recipesInMeal){
-//         this.id=id;
-//         this.recipesInMeal=recipesInMeal;
-//     }
-// }
 
 var express = require("express");
 var router = express.Router();
@@ -12,11 +6,11 @@ const bcrypt = require("bcrypt");
 
 
 
-app.put('/deleteAllRecipes', (req, res) => {
+router.put('/deleteAllRecipes', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-app.put('/deleteRecipeInMaking/:recipeId', (req, res) => {
+router.put('/deleteRecipeInMaking/:recipeId', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
