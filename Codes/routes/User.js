@@ -24,13 +24,9 @@ router.use(function (req, res, next) {
 
 
 //User REST requests
-<<<<<<< HEAD
+//hey yaaa
 
 router.get('/login', (req, res) => {
-=======
-// hey heyeeeeee
-app.get('/login', (req, res) => {
->>>>>>> af42a0e613944cab0dd3b285649fdccea4818235
 	res.status(200).send("Hello World");
 });
 
