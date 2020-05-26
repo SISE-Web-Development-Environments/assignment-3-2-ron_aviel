@@ -1,7 +1,7 @@
 
 var express = require("express");
 var router = express.Router();
-const DButils = require("Codes/sqlconnect");
+const DButils = require("./sqlconnect");
 const bcrypt = require("bcrypt");
 
 
@@ -26,13 +26,6 @@ router.use(function (req, res, next) {
 //User REST requests
 //hey yaaa
 
-router.get('/login', (req, res) => {
-	res.status(200).send("Hello World");
-});
-
-router.get('/logout', (req, res) => {
-	res.status(200).send("Hello World");
-});
 
 router.get('/GetFavoriteRecipes/:id', (req, res) => {
 	res.status(200).send("Hello World");
@@ -46,9 +39,6 @@ router.get('/getMeal/:userID', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-router.post('/', (req, res) => {
-	res.status(200).send("Hello World");
-});
 
 router.put('/updateLastSeenRecipes', (req, res) => {
 	res.status(200).send("Hello World");
@@ -57,7 +47,6 @@ router.put('/updateLastSeenRecipes', (req, res) => {
 router.put('/updateFavoriteRecipes', (req, res) => {
 	res.status(200).send("Hello World");
 });
-
 
 router.post("/Register", async (req, res, next) => {
   try {
@@ -68,14 +57,14 @@ router.post("/Register", async (req, res, next) => {
 
     if (users.find((x) => x.username === req.body.username))
       throw { status: 409, message: "Username taken" };
-
     // add the new username
     let hash_password = bcrypt.hashSync(
       req.body.password,
       parseInt(process.env.bcrypt_saltRounds)
     );
     await DButils.execQuery(
-      `INSERT INTO users VALUES (default, '${req.body.username}', '${hash_password}')`
+      `INSERT INTO users VALUES (default, '${req.body.username}', '${req.body.firstname}' , '${req.body.lastname}','${req.body.country}',
+      '${hash_password}','${req.body.email}','${req.body.photoLink}', 0, 0 ,0 ) ` 
     );
     res.status(201).send({ message: "user created", success: true });
   } catch (error) {

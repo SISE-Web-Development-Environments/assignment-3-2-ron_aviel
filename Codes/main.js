@@ -4,7 +4,7 @@ var express = require("express");
 var path = require("path");
 var logger = require("morgan");
 const session = require("client-sessions");
-const DButils = require("./sqlconnect");
+const DButils = require("./routes/sqlconnect");
 var app = express();
 app.use(logger("dev")); //logger
 app.use(express.json()); // parse application/json
