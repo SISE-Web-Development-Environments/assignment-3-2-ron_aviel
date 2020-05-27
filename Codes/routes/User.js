@@ -3,6 +3,7 @@ var express = require("express");
 var router = express.Router();
 const DButils = require("./sqlconnect");
 const bcrypt = require("bcrypt");
+const Recipies=require("./Recipes");
 
 
 //#region cookie middleware
@@ -24,29 +25,6 @@ router.use(function (req, res, next) {
 
 
 //User REST requests
-//hey yaaa
-
-
-router.get('/GetFavoriteRecipes/:id', (req, res) => {
-	res.status(200).send("Hello World");
-});
-
-router.get('/getLastSeen/:id', (req, res) => {
-	res.status(200).send("Hello World");
-});
-
-router.get('/getMeal/:userID', (req, res) => {
-	res.status(200).send("Hello World");
-});
-
-
-router.put('/updateLastSeenRecipes', (req, res) => {
-	res.status(200).send("Hello World");
-});
-
-router.put('/updateFavoriteRecipes', (req, res) => {
-	res.status(200).send("Hello World");
-});
 
 router.post("/Register", async (req, res, next) => {
   try {
@@ -64,7 +42,7 @@ router.post("/Register", async (req, res, next) => {
     );
     await DButils.execQuery(
       `INSERT INTO users VALUES (default, '${req.body.username}', '${req.body.firstname}' , '${req.body.lastname}','${req.body.country}',
-      '${hash_password}','${req.body.email}','${req.body.photoLink}', 0, 0 ,0 ) ` 
+      '${hash_password}','${req.body.email}','${req.body.photoLink}', "", "" ,"",0 ) ` 
     );
     res.status(201).send({ message: "user created", success: true });
   } catch (error) {
@@ -106,5 +84,54 @@ router.post("/Logout", function (req, res) {
   req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
   res.send({ success: true, message: "logout succeeded" });
 });
+
+
+
+router.get('/GetFavoriteRecipes', (req, res) => {
+  const users = await DButils.execQuery("SELECT favorites FROM users");
+  if (!users.find((x) => x.user_id === req.session.user_id))
+    throw { status: 401, message: "User not logged in" };
+  const favorites = (
+      await DButils.execQuery(
+        `SELECT favorites FROM users WHERE username = '${req.session.user_id}'`
+      )
+    )[0];  
+    var userFavorites=JSON.parse(favorites);
+    var recipes=new Array(userFavorites.length/2);
+    for(var i=0,k=0,j=1;i<recipes.length;i=i+2,j=j+2,k++){
+      if(userFavorites[j]==0){ //user
+      const recipe = (
+        await DButils.execQuery(
+          `SELECT * FROM recipes WHERE recipe_id = '${userFavorites[i]}'`
+        )
+      )[0];  
+      }
+      else
+        {
+          const recipe =Recipies.getRecipeInfo(userFavorites[i]);
+        }
+            recipes[k]=recipe;
+    }
+});
+
+router.get('/getLastSeen/:id', (req, res) => {
+	res.status(200).send("Hello World");
+});
+
+router.get('/getMeal/:userID', (req, res) => {
+  const meal = await DButils.execQuery('SELECT recipe_id,progression FROM recipes_in_making where user_id= '${req.body.username}'');
+  if (!meal.find((x) => x.username === req.body.username))
+    throw { status: 401, message: "Username or Password incorrect" };
+});
+
+
+router.put('/updateLastSeenRecipes', (req, res) => {
+	res.status(200).send("Hello World");
+});
+
+router.put('/updateFavoriteRecipes', (req, res) => {
+	res.status(200).send("Hello World");
+});
+
 
 module.exports = router;

@@ -53,4 +53,9 @@ function getRecipeInfo(id) {
   });
 }
 
+function getDisplay(recipe){
+  var recipeToReturn=new Object();
+  recipeToReturn.photo=recipe.image;
+}
+
 module.exports = router;
