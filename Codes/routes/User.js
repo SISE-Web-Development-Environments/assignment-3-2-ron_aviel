@@ -42,7 +42,7 @@ router.post("/Register", async (req, res, next) => {
     );
     await DButils.execQuery(
       `INSERT INTO users VALUES (default, '${req.body.username}', '${req.body.firstname}' , '${req.body.lastname}','${req.body.country}',
-      '${hash_password}','${req.body.email}','${req.body.photoLink}', "", "" ,"",0 ) ` 
+      '${hash_password}','${req.body.email}','${req.body.photoLink}', '', '' ,'',0 ) ` 
     );
     res.status(201).send({ message: "user created", success: true });
   } catch (error) {
@@ -87,10 +87,8 @@ router.post("/Logout", function (req, res) {
 
 
 
-router.get('/GetFavoriteRecipes', (req, res) => {
-  const users = await DButils.execQuery("SELECT favorites FROM users");
-  if (!users.find((x) => x.user_id === req.session.user_id))
-    throw { status: 401, message: "User not logged in" };
+router.get('/GetFavoriteRecipes', async(req, res,next) => {
+  try{
   const favorites = (
       await DButils.execQuery(
         `SELECT favorites FROM users WHERE username = '${req.session.user_id}'`
@@ -109,19 +107,24 @@ router.get('/GetFavoriteRecipes', (req, res) => {
       else
         {
           const recipe =Recipies.getRecipeInfo(userFavorites[i]);
+          recipe=Recipies.getDisplay(recipe);
         }
             recipes[k]=recipe;
     }
+    recipes[0]="sdfs"
+    res.send({ data:recipes.data });
+  }
+   catch (error) {
+    next(error);
+  }
 });
 
 router.get('/getLastSeen/:id', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-router.get('/getMeal/:userID', (req, res) => {
-  const meal = await DButils.execQuery('SELECT recipe_id,progression FROM recipes_in_making where user_id= '${req.body.username}'');
-  if (!meal.find((x) => x.username === req.body.username))
-    throw { status: 401, message: "Username or Password incorrect" };
+router.get('/getMeal/:userID', async (req, res) => {
+
 });
 
 

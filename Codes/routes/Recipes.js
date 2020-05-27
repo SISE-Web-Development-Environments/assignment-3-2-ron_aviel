@@ -56,6 +56,12 @@ function getRecipeInfo(id) {
 function getDisplay(recipe){
   var recipeToReturn=new Object();
   recipeToReturn.photo=recipe.image;
+  recipeToReturn.title=recipe.title;
+  recipeToReturn.readyInMinutes=recipe.readyInMinutes;
+  recipeToReturn.aggregateLikes=recipe.aggregateLikes;
+  recipeToReturn.vegan=recipe.vegan;
+  recipeToReturn.glutenFree=recipe.glutenFree;
+  return recipeToReturn;
 }
 
 module.exports = router;
