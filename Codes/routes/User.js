@@ -3,7 +3,7 @@ var express = require("express");
 var router = express.Router();
 const DButils = require("./sqlconnect");
 const bcrypt = require("bcrypt");
-const Recipies=require("./Recipes");
+const Recipes=require("./Recipes");
 
 
 //#region cookie middleware
@@ -91,35 +91,25 @@ router.get('/GetFavoriteRecipes', async(req, res,next) => {
   try{
   const favorites = (
       await DButils.execQuery(
-        `SELECT favorites FROM users WHERE username = '${req.session.user_id}'`
+        `SELECT * FROM users WHERE user_id = '${req.session.user_id}'`
       )
     )[0];  
-    var userFavorites=JSON.parse(favorites);
-    var recipes=new Array(userFavorites.length/2);
-    for(var i=0,k=0,j=1;i<recipes.length;i=i+2,j=j+2,k++){
-      if(userFavorites[j]==0){ //user
-      const recipe = (
-        await DButils.execQuery(
-          `SELECT * FROM recipes WHERE recipe_id = '${userFavorites[i]}'`
-        )
-      )[0];  
-      }
-      else
-        {
-          const recipe =Recipies.getRecipeInfo(userFavorites[i]);
-          recipe=Recipies.getDisplay(recipe);
-        }
-            recipes[k]=recipe;
+    //var userFavorites=JSON.parse(favorites);
+    var userFavorites=[3];
+    var recipes=new Array(userFavorites.length);
+    for(var i=0;i<recipes.length;i++){
+          const recipe =Recipes.getRecipeInfo(userFavorites[i]);
+          recipe=Recipes.getDisplay(recipe);
+          recipes[i]=recipe;
     }
-    recipes[0]="sdfs"
-    res.send({ data:recipes.data });
+    res.send(recipes);
   }
    catch (error) {
     next(error);
   }
 });
 
-router.get('/getLastSeen/:id', (req, res) => {
+router.get('/getLastSeen', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
