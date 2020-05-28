@@ -138,19 +138,31 @@ router.put('/updateLastSeenRecipes', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-router.put('/updateFavoriteRecipes', async(req, res) => {
+router.put('/updateFavoriteRecipes', async(req, res,next) => {
   try{
     const favorites = (
       await DButils.execQuery(
         `SELECT favorites FROM users WHERE user_id = '${req.session.user_id}'`
       )
     )[0]; 
-    if(favorites===''){
-      var recipe=[req.body.recipe_id];
-      await DButils.execQuery(
-        `SELECT favorites FROM users WHERE user_id = '${req.session.user_id}'`
+    if(false){
+      let recipe=[req.body.recipe_id];
+      const ans=await DButils.execQuery(
+        `UPDATE users SET favorites='${JSON.stringify(recipe)}' WHERE user_id = '${req.session.user_id}'`
       )
     }
+    else{
+      let newFavorites=JSON.parse(favorites);
+      newFavorites[newFavorites.length]=req.body.recipe_id;
+      await DButils.execQuery(
+        `UPDATE users SET favorites='${JSON.stringify(newFavorites)}' WHERE user_id = '${req.session.user_id}'`
+      )
+    }
+        const user = (
+        await DButils.execQuery(
+          `SELECT * FROM users WHERE user_id = '${req.session.user_id}'`
+        ))[0];
+        res.send(user);
         
   }
   catch (error) {
