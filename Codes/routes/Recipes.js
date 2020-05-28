@@ -55,13 +55,13 @@ function getRecipeInfo(id) {
 
 function getDisplay(recipe){
   var recipeToReturn=new Object();
-  recipeToReturn.photo=recipe.image;
-  recipeToReturn.title=recipe.title;
-  recipeToReturn.readyInMinutes=recipe.readyInMinutes;
-  recipeToReturn.aggregateLikes=recipe.aggregateLikes;
-  recipeToReturn.vegan=recipe.vegan;
-  recipeToReturn.glutenFree=recipe.glutenFree;
+  recipeToReturn.photo=recipe.data.image;
+  recipeToReturn.title=recipe.data.title;
+  recipeToReturn.readyInMinutes=recipe.data.readyInMinutes;
+  recipeToReturn.aggregateLikes=recipe.data.aggregateLikes;
+  recipeToReturn.vegan=recipe.data.vegan;
+  recipeToReturn.glutenFree=recipe.data.glutenFree;
   return recipeToReturn;
 }
 
-module.exports = router;
+module.exports = {router,getRecipeInfo,getDisplay};

@@ -95,14 +95,20 @@ router.get('/GetFavoriteRecipes', async(req, res,next) => {
       )
     )[0];  
     //var userFavorites=JSON.parse(favorites);
-    var userFavorites=[3];
+    var userFavorites=[716429,1232];
     var recipes=new Array(userFavorites.length);
-    for(var i=0;i<recipes.length;i++){
-          const recipe =Recipes.getRecipeInfo(userFavorites[i]);
-          recipe=Recipes.getDisplay(recipe);
-          recipes[i]=recipe;
-    }
-    res.send(recipes);
+     for(var i=0;i<recipes.length;i++){
+           const recipe =await Recipes.getRecipeInfo(userFavorites[i]);
+           var recipeToReturn=new Object();
+           recipeToReturn.photo=recipe.data.image;
+           recipeToReturn.title=recipe.data.title;
+           recipeToReturn.readyInMinutes=recipe.data.readyInMinutes;
+           recipeToReturn.aggregateLikes=recipe.data.aggregateLikes;
+           recipeToReturn.vegan=recipe.data.vegan;
+           recipeToReturn.glutenFree=recipe.data.glutenFree;
+           recipes[i]=recipeToReturn;
+     }
+    res.send({recipes});
   }
    catch (error) {
     next(error);
