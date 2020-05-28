@@ -94,8 +94,11 @@ router.get('/GetFavoriteRecipes', async(req, res,next) => {
         `SELECT favorites FROM users WHERE user_id = '${req.session.user_id}'`
       )
     )[0];  
-    //var userFavorites=JSON.parse(favorites);
-    var userFavorites=[716429,1232];
+    if(favorites.favorites===""){
+      send("");
+    }
+    else{
+    var userFavorites=JSON.parse(favorites.favorites);
     var recipes=new Array(userFavorites.length);
      for(var i=0;i<recipes.length;i++){
            const recipe =await Recipes.getRecipeInfo(userFavorites[i]);
@@ -109,6 +112,7 @@ router.get('/GetFavoriteRecipes', async(req, res,next) => {
            recipes[i]=recipeToReturn;
      }
     res.send({recipes});
+    }
   }
    catch (error) {
     next(error);
@@ -146,19 +150,23 @@ router.get('/getLastSeen', async (req, res,next) => {
 
 router.get('/getMeal', async (req, res) => {
   try{
-    const favorites = (
+    const meal = (
       await DButils.execQuery(
         `SELECT recipes_in_making FROM users WHERE user_id = '${req.session.user_id}'`
       )
     )[0];  
-        //var userFavorites=JSON.parse(favorites);
-        var userMeal=[716429,1232];
-        var recipes=new Array(userFavorites.length);
+    if(meal.recipes_in_making===""){
+        res.send({data:"empty"});
+    }
+    else{
+        var userMeal=JSON.parse(meal.recipes_in_making);
+        var recipes=new Array(userMeal.length);
          for(var i=0;i<recipes.length;i++){
-               const recipe =await Recipes.getRecipeInfo(userFavorites[i]);
-               recipes[i]=recipeToReturn;
+               const recipe =await Recipes.getRecipeInMaking(userMeal[i]);
+               recipes[i]=recipe.data;
          }
         res.send({recipes});
+    }
   }
   catch (error) {
     next(error);
