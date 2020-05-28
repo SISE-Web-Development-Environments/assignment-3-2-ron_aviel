@@ -91,7 +91,7 @@ router.get('/GetFavoriteRecipes', async(req, res,next) => {
   try{
   const favorites = (
       await DButils.execQuery(
-        `SELECT * FROM users WHERE user_id = '${req.session.user_id}'`
+        `SELECT favorites FROM users WHERE user_id = '${req.session.user_id}'`
       )
     )[0];  
     //var userFavorites=JSON.parse(favorites);
@@ -119,7 +119,17 @@ router.get('/getLastSeen', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-router.get('/getMeal/:userID', async (req, res) => {
+router.get('/getMeal', async (req, res) => {
+  try{
+    const favorites = (
+      await DButils.execQuery(
+        `SELECT favorites FROM users WHERE user_id = '${req.session.user_id}'`
+      )
+    )[0];  
+  }
+  catch (error) {
+    next(error);
+  }
 
 });
 
@@ -128,8 +138,24 @@ router.put('/updateLastSeenRecipes', (req, res) => {
 	res.status(200).send("Hello World");
 });
 
-router.put('/updateFavoriteRecipes', (req, res) => {
-	res.status(200).send("Hello World");
+router.put('/updateFavoriteRecipes', async(req, res) => {
+  try{
+    const favorites = (
+      await DButils.execQuery(
+        `SELECT favorites FROM users WHERE user_id = '${req.session.user_id}'`
+      )
+    )[0]; 
+    if(favorites===''){
+      var recipe=[req.body.recipe_id];
+      await DButils.execQuery(
+        `SELECT favorites FROM users WHERE user_id = '${req.session.user_id}'`
+      )
+    }
+        
+  }
+  catch (error) {
+    next(error);
+  }
 });
 
 
