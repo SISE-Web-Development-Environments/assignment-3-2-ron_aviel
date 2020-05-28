@@ -115,17 +115,50 @@ router.get('/GetFavoriteRecipes', async(req, res,next) => {
   }
 });
 
-router.get('/getLastSeen', (req, res) => {
-	res.status(200).send("Hello World");
+router.get('/getLastSeen', async (req, res,next) => {
+  try{
+  const lastseen = (
+    await DButils.execQuery(
+      `SELECT lastseen FROM users WHERE user_id = '${req.session.user_id}'`
+    )
+  )[0];  
+  var lastseens=JSON.parse(lastseen);
+  var recipes=new Array(lastseens.length);
+   for(var i=0;i<recipes.length;i++){
+         const recipe =await Recipes.getRecipeInfo(lastseens[i]);
+         var recipeToReturn=new Object();
+         recipeToReturn.photo=recipe.data.image;
+         recipeToReturn.title=recipe.data.title;
+         recipeToReturn.readyInMinutes=recipe.data.readyInMinutes;
+         recipeToReturn.aggregateLikes=recipe.data.aggregateLikes;
+         recipeToReturn.vegan=recipe.data.vegan;
+         recipeToReturn.glutenFree=recipe.data.glutenFree;
+         recipes[i]=recipeToReturn;
+   }
+  res.send({recipes});
+  }
+ catch (error) {
+  next(error);
+}
 });
+
+
 
 router.get('/getMeal', async (req, res) => {
   try{
     const favorites = (
       await DButils.execQuery(
-        `SELECT favorites FROM users WHERE user_id = '${req.session.user_id}'`
+        `SELECT recipes_in_making FROM users WHERE user_id = '${req.session.user_id}'`
       )
     )[0];  
+        //var userFavorites=JSON.parse(favorites);
+        var userMeal=[716429,1232];
+        var recipes=new Array(userFavorites.length);
+         for(var i=0;i<recipes.length;i++){
+               const recipe =await Recipes.getRecipeInfo(userFavorites[i]);
+               recipes[i]=recipeToReturn;
+         }
+        res.send({recipes});
   }
   catch (error) {
     next(error);
@@ -134,9 +167,37 @@ router.get('/getMeal', async (req, res) => {
 });
 
 
-router.put('/updateLastSeenRecipes', (req, res) => {
-	res.status(200).send("Hello World");
+
+router.put('/updateLastSeenRecipes', async (req, res,next) => {
+  try{
+    const lastseen = (
+      await DButils.execQuery(
+        `SELECT lastseen FROM users WHERE user_id = '${req.session.user_id}'`
+      )
+    )[0];
+    let id=req.body.recipe_id;
+    const recipe =await Recipes.getRecipeInfo(id);
+    // if not exist throw exception  throw { status: 401, message: "Username or Password incorrect" };
+    var lastseens=JSON.parse(lastseen);
+    if(lastseens==undefined){
+      lastseens=new Array(3);
+      lastseens[0]=id;
+    }else{
+    lastseens[2]=lastseens[1];
+    lastseens[1]=lastseens[0];
+    lastseens[0]=id;// the input 
+    }
+    const ans=await DButils.execQuery(
+      `UPDATE users SET favorites='${JSON.stringify(lastseens)}' WHERE user_id = '${req.session.user_id}'`
+    );
+    
+      }
+      catch (error) {
+        next(error);
+      }
+
 });
+
 
 router.put('/updateFavoriteRecipes', async(req, res,next) => {
   try{

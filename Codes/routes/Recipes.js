@@ -53,6 +53,16 @@ function getRecipeInfo(id) {
   });
 }
 
+
+function getRecipeInMaking(id){
+  return axios.get(`${api_domain}/${id}/analyzedInstructions`, {
+    params: {
+      stepBreakdown: false,
+      apiKey: process.env.spooncular_apiKey
+    }
+  });
+}
+
 function getDisplay(recipe){
   var recipeToReturn=new Object();
   recipeToReturn.photo=recipe.data.image;
@@ -64,4 +74,4 @@ function getDisplay(recipe){
   return recipeToReturn;
 }
 
-module.exports = {router,getRecipeInfo,getDisplay};
+module.exports = {router,getRecipeInfo,getDisplay,getRecipeInMaking};
