@@ -126,10 +126,14 @@ router.get('/getLastSeen', async (req, res,next) => {
     await DButils.execQuery(
       `SELECT lastseen FROM users WHERE user_id = '${req.session.user_id}'`
     )
-  )[0];  
-  var lastseens=JSON.parse(lastseen);
-  var recipes=new Array(lastseens.length);
+  )[0];
+  if(lastseen.lastseen===""){
+   throw { status: 401, message: "The LastSeen list is empty" };
+  }
+  let lastseens=JSON.parse(lastseen.lastseen);
+  let recipes=new Array(lastseens.length);
    for(var i=0;i<recipes.length;i++){
+          if(lastseens[i]!=-1){
          const recipe =await Recipes.getRecipeInfo(lastseens[i]);
          var recipeToReturn=new Object();
          recipeToReturn.photo=recipe.data.image;
@@ -139,6 +143,7 @@ router.get('/getLastSeen', async (req, res,next) => {
          recipeToReturn.vegan=recipe.data.vegan;
          recipeToReturn.glutenFree=recipe.data.glutenFree;
          recipes[i]=recipeToReturn;
+          }
    }
   res.send({recipes});
   }
@@ -184,22 +189,24 @@ router.put('/updateLastSeenRecipes', async (req, res,next) => {
         `SELECT lastseen FROM users WHERE user_id = '${req.session.user_id}'`
       )
     )[0];
-    let id=req.body.recipe_id;
-    const recipe =await Recipes.getRecipeInfo(id);
-    // if not exist throw exception  throw { status: 401, message: "Username or Password incorrect" };
-    var lastseens=JSON.parse(lastseen);
-    if(lastseens==undefined){
-      lastseens=new Array(3);
+    let id=req.body.id;
+    const recipe =await Recipes.getRecipeInfo(id);// throw exception if not exist 
+    var lastseens=new Array(3);
+    if(lastseen.lastseen===""){
       lastseens[0]=id;
-    }else{
+      lastseens[1]=-1;
+      lastseens[2]=-1;
+    } 
+    else{
+    lastseens=JSON.parse(lastseen.lastseen);
     lastseens[2]=lastseens[1];
     lastseens[1]=lastseens[0];
-    lastseens[0]=id;// the input 
+    lastseens[0]=id; 
     }
     const ans=await DButils.execQuery(
-      `UPDATE users SET favorites='${JSON.stringify(lastseens)}' WHERE user_id = '${req.session.user_id}'`
+      `UPDATE users SET lastseen='${JSON.stringify(lastseens)}' WHERE user_id = '${req.session.user_id}'`
     );
-    
+    res.send({ success: true, message: "Last seen list has been update " });
       }
       catch (error) {
         next(error);
