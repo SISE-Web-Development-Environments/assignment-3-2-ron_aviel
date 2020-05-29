@@ -6,7 +6,7 @@ const DButils = require("./sqlconnect");
 const bcrypt = require("bcrypt");
 const Recipes=require("./Recipes");
 
-
+//hey hey aviel
 //#region cookie middleware
 router.use(function (req, res, next) {
   if (req.session && req.session.user_id) {
@@ -213,8 +213,6 @@ router.put('/updateLastSeenRecipes', async (req, res,next) => {
       }
 
 });
-
-
 router.put('/updateFavoriteRecipes', async(req, res,next) => {
   try{
     const favorites = (
@@ -245,7 +243,5 @@ router.put('/updateFavoriteRecipes', async(req, res,next) => {
   catch (error) {
     next(error);
   }
-});
-
-
+});//
 module.exports = router;
