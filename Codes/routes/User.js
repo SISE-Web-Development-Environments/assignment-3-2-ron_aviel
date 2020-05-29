@@ -206,7 +206,7 @@ router.put('/updateLastSeenRecipes', async (req, res,next) => {
     const ans=await DButils.execQuery(
       `UPDATE users SET lastseen='${JSON.stringify(lastseens)}' WHERE user_id = '${req.session.user_id}'`
     )
-    res.send({ success: true, message: "Last seen list has been update " });
+    res.send({ success: true, message: "Last seen list has been updated " });
       }
       catch (error) {
         next(error);
