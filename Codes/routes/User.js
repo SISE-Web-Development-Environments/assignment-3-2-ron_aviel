@@ -128,14 +128,7 @@ router.get('/getLastSeen', async (req, res,next) => {
    for(var i=0;i<recipes.length;i++){
           if(lastseens[i]!=-1){
          const recipe =await Recipes.getRecipeInfo(lastseens[i]);
-         var recipeToReturn=new Object();
-         recipeToReturn.photo=recipe.data.image;
-         recipeToReturn.title=recipe.data.title;
-         recipeToReturn.readyInMinutes=recipe.data.readyInMinutes;
-         recipeToReturn.aggregateLikes=recipe.data.aggregateLikes;
-         recipeToReturn.vegan=recipe.data.vegan;
-         recipeToReturn.glutenFree=recipe.data.glutenFree;
-         recipes[i]=recipeToReturn;
+          recipes[i]=Recipes.getDisplay(recipe);
           }
    }
   res.send({recipes});
@@ -184,17 +177,13 @@ router.put('/updateLastSeenRecipes', async (req, res,next) => {
     )[0];
     let id=req.body.id;
     const recipe =await Recipes.getRecipeInfo(id);// throw exception if not exist 
-    var lastseens=new Array(3);
+    let lastseens=[1];
     if(lastseen.lastseen===""){
       lastseens[0]=id;
-      lastseens[1]=-1;
-      lastseens[2]=-1;
     } 
     else{
     lastseens=JSON.parse(lastseen.lastseen);
-    lastseens[2]=lastseens[1];
-    lastseens[1]=lastseens[0];
-    lastseens[0]=id; 
+    lastseens=UpdateTheArray(id,lastseens);
     }
     const ans=await DButils.execQuery(
       `UPDATE users SET lastseen='${JSON.stringify(lastseens)}' WHERE user_id = '${req.session.user_id}'`
@@ -206,6 +195,25 @@ router.put('/updateLastSeenRecipes', async (req, res,next) => {
       }
 
 });
+function FindIfRecipeexist(id ,arr){
+  for(let i=0;i<arr.length;i++){
+      if(id===arr[i])
+      return i;
+  }
+  return -1;
+}
+
+function UpdateTheArray(id,arr){
+  let index=FindIfRecipeexist(id,arr);
+  if(index===-1)
+    index=arr.length-1; 
+  for(let i=0;i<index;i++){
+      arr[i+1]=arr[i];
+    }
+  arr[0]=id;
+  return arr;
+}
+
 router.put('/updateFavoriteRecipes', async(req, res,next) => {
   try{
     const favorites = (
