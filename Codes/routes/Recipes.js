@@ -63,7 +63,7 @@ router.get('/getRandomRecipes', async(req,res,next) =>{
     });
     var random=new Array(3);
     for(var i=0;i<3;i++){
-      var id=search_response.data.recipes[i].id;
+      var id=search_response.data.recipes[i].data.id;
       random[i]=getDisplay(getRecipeInfo(id));
     }
     res.send({random});
