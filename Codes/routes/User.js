@@ -195,7 +195,7 @@ router.put('/updateLastSeenRecipes', async (req, res,next) => {
       }
 
 });
-function FindIfRecipeexist(id ,arr){
+async function FindIfRecipeexist(id ,arr){
   for(let i=0;i<arr.length;i++){
       if(id===arr[i])
       return i;
@@ -203,7 +203,7 @@ function FindIfRecipeexist(id ,arr){
   return -1;
 }
 
-function UpdateTheArray(id,arr){
+async function UpdateTheArray(id,arr){
   let index=FindIfRecipeexist(id,arr);
   if(index===-1)
     index=arr.length-1; 
