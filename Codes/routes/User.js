@@ -103,14 +103,7 @@ router.get('/GetFavoriteRecipes', async(req, res,next) => {
     var recipes=new Array(userFavorites.length);
      for(var i=0;i<recipes.length;i++){
            const recipe =await Recipes.getRecipeInfo(userFavorites[i]);
-           var recipeToReturn=new Object();
-           recipeToReturn.photo=recipe.data.image;
-           recipeToReturn.title=recipe.data.title;
-           recipeToReturn.readyInMinutes=recipe.data.readyInMinutes;
-           recipeToReturn.aggregateLikes=recipe.data.aggregateLikes;
-           recipeToReturn.vegan=recipe.data.vegan;
-           recipeToReturn.glutenFree=recipe.data.glutenFree;
-           recipes[i]=recipeToReturn;
+           recipes[i]=Recipes.getDisplay(recipe);
      }
     res.send({recipes});
     }
@@ -244,4 +237,29 @@ router.put('/updateFavoriteRecipes', async(req, res,next) => {
     next(error);
   }
 });//
+
+ async function isInFavorites(id,next){
+  try{
+    const favorites = (
+        await DButils.execQuery(
+          `SELECT favorites FROM users WHERE user_id = '${req.session.user_id}'`
+        )
+      )[0];  
+      if(favorites.favorites===""){
+        return false;
+      }
+      else{
+      var userFavorites=JSON.parse(favorites.favorites);
+       for(var i=0;i<userFavorites.length;i++){
+          if(userFavorites[i]===id)
+            return true;
+       }
+  }
+    return true;
+  }
+  catch (error) {
+    next(error);
+  }
+}
+
 module.exports = router;

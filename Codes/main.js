@@ -25,13 +25,13 @@ var port = process.env.PORT || "5001";
 const user = require("./routes/user");
 const recipeInMaking = require("./routes/recipeInMaking");
 const meal = require("./routes/meal");
-const recipe = require("./routes/recipe");
+const recipe = require("./routes/Recipes");
 
 
 
 app.use("/user", user);
 app.use("/recipeInMaking", recipeInMaking);
-app.use("/recipes", recipe);
+app.use("/Recipes", recipe);
 app.use("/meal", meal);
 
 app.use(function (err, req, res, next) {
