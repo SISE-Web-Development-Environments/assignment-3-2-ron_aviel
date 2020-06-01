@@ -5,7 +5,7 @@ var router = express.Router();
 const DButils = require("./sqlconnect");
 const bcrypt = require("bcrypt");
 const Recipes=require("./Recipes");
-
+const recFunction =require("./recipe");
 //hey hey aviel
 //#region cookie middleware
 router.use(function (req, res, next) {
@@ -102,8 +102,8 @@ router.get('/GetFavoriteRecipes', async(req, res,next) => {
     var userFavorites=JSON.parse(favorites.favorites);
     var recipes=new Array(userFavorites.length);
      for(var i=0;i<recipes.length;i++){
-           const recipe =await Recipes.getRecipeInfo(userFavorites[i]);
-           recipes[i]=Recipes.getDisplay(recipe);
+           const recipe =await recFunction.getRecipeInfo(userFavorites[i]);
+           recipes[i]=recFunction.getDisplay(recipe);
      }
     res.send({recipes});
     }
@@ -126,9 +126,9 @@ router.get('/getLastSeen', async (req, res,next) => {
   let lastseens=JSON.parse(lastseen.lastseen);
   let recipes=new Array(lastseens.length);
    for(var i=0;i<recipes.length;i++){
-          if(lastseens[i]!=-1){
-         const recipe =await Recipes.getRecipeInfo(lastseens[i]);
-          recipes[i]=Recipes.getDisplay(recipe);
+          if(lastseens[i]!=-1 && lastseens[i]!=undefined){
+         const recipe =await recFunction.getRecipeInfo(lastseens[i]);
+          recipes[i]=recFunction.getDisplay(recipe);
           }
    }
   res.send({recipes});
@@ -154,8 +154,8 @@ router.get('/getMeal', async (req, res) => {
         var userMeal=JSON.parse(meal.recipes_in_making);
         var recipes=new Array(userMeal.length);
          for(var i=0;i<recipes.length;i++){
-               const recipe =await Recipes.getRecipeInMaking(userMeal[i]);
-               recipes[i]=recipe.data;
+               const recipe =await recFunction.getRecipeInMaking(userMeal[i]);
+               recipes[i]=recFunction.data;
          }
         res.send({recipes});
     }
@@ -176,8 +176,8 @@ router.put('/updateLastSeenRecipes', async (req, res,next) => {
       )
     )[0];
     let id=req.body.id;
-    const recipe =await Recipes.getRecipeInfo(id);// throw exception if not exist 
-    let lastseens=[1];
+    const recipe =await recFunction.getRecipeInfo(id);// throw exception if not exist 
+    let lastseens=new Array(1);
     if(lastseen.lastseen===""){
       lastseens[0]=id;
     } 
