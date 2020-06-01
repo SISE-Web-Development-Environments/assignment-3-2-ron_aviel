@@ -53,5 +53,55 @@ function getRecipeInfo(id) {
 	recipeToReturn.extendedIngredients=recipe.data.extendedIngredients;
 	return recipeToReturn
   }
-  module.exports = {getRecipeInfo,getDisplay,getRecipeInMaking,getFullDisplay};
+
+
+  async function isInFavorites(id,next){
+	try{
+	  const favorites = (
+		  await DButils.execQuery(
+			`SELECT favorites FROM users WHERE user_id = '${req.session.user_id}'`
+		  )
+		)[0];  
+		if(favorites.favorites===""){
+		  return false;
+		}
+		else{
+		var userFavorites=JSON.parse(favorites.favorites);
+		 for(var i=0;i<userFavorites.length;i++){
+			if(userFavorites[i]===id)
+			  return true;
+		 }
+	}
+	  return false;
+	}
+	catch (error) {
+	  next(error);
+	}
+  }
+  
+  async function isInLastSeen(id,next){
+	try{
+	  const favorites = (
+		  await DButils.execQuery(
+			`SELECT lastseen FROM users WHERE user_id = '${req.session.user_id}'`
+		  )
+		)[0];  
+		if(lastseen.lastseen===""){
+		  return false;
+		}
+		else{
+		var userLastSeen=JSON.parse(lastseen.lastseen);
+		 for(var i=0;i<userLastSeen.length;i++){
+			if(userLastSeen[i]===id)
+			  return true;
+		 }
+	}
+	  return false;
+	}
+	catch (error) {
+	  next(error);
+	}
+  }
+
+  module.exports = {getRecipeInfo,getDisplay,getRecipeInMaking,getFullDisplay,isInLastSeen,isInFavorites};
 

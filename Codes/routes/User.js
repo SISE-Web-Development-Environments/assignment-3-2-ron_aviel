@@ -90,6 +90,8 @@ router.post("/Logout", function (req, res) {
 
 router.get('/GetFavoriteRecipes', async(req, res,next) => {
   try{
+    if(req.session.user_id==undefined)
+      throw new Error("User not logged in");
   const favorites = (
       await DButils.execQuery(
         `SELECT favorites FROM users WHERE user_id = '${req.session.user_id}'`
@@ -103,7 +105,7 @@ router.get('/GetFavoriteRecipes', async(req, res,next) => {
     var recipes=new Array(userFavorites.length);
      for(var i=0;i<recipes.length;i++){
            const recipe =await recFunction.getRecipeInfo(userFavorites[i]);
-           recipes[i]=recFunction.getDisplay(recipe);
+           recipes[i]=recFunction.getDisplay(recipe,true,recFunction.isInLastSeen(recipe.id));
      }
     res.send({recipes});
     }
@@ -246,28 +248,5 @@ router.put('/updateFavoriteRecipes', async(req, res,next) => {
   }
 });//
 
- async function isInFavorites(id,next){
-  try{
-    const favorites = (
-        await DButils.execQuery(
-          `SELECT favorites FROM users WHERE user_id = '${req.session.user_id}'`
-        )
-      )[0];  
-      if(favorites.favorites===""){
-        return false;
-      }
-      else{
-      var userFavorites=JSON.parse(favorites.favorites);
-       for(var i=0;i<userFavorites.length;i++){
-          if(userFavorites[i]===id)
-            return true;
-       }
-  }
-    return true;
-  }
-  catch (error) {
-    next(error);
-  }
-}
 
 module.exports = router;
