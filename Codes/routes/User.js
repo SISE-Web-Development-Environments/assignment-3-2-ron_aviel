@@ -129,7 +129,7 @@ router.get('/getLastSeen', async (req, res,next) => {
   let recipes=new Array(lastseens.length);
    for(var i=0;i<3;i++){    
          const recipe =await recFunction.getRecipeInfo(lastseens[i]);
-          recipes[i]=recFunction.getDisplay(recipe,true,true);        
+          recipes[i]=recFunction.getDisplay(recipe,recFunction.isInFavorites(recipe.id),true);        
    }
     res.send(recipes);
 
@@ -178,14 +178,12 @@ router.put('/updateLastSeenRecipes', async (req, res,next) => {
     let id=req.body.id;
    // const recipe =await recFunction.getRecipeInfo(id);// throw exception if not exist 
     let lastseens=new Array(1);
-    lastseens[0]=id;
     if(lastseen.lastseen==="{}"){
       lastseens[0]=id;
     } 
     else{
     lastseens=JSON.parse(lastseen.lastseen);
      lastseens=UpdateTheArray(id,lastseens);
-     anss=FindIfRecipeexist(id,lastseens);
     }
     const ans=await DButils.execQuery(
       `UPDATE users SET lastseen='${JSON.stringify(lastseens)}' WHERE user_id = '${req.session.user_id}'`
