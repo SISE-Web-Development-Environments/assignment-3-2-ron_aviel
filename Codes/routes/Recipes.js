@@ -43,9 +43,20 @@ router.get("/search", async (req, res, next) => {
 });
 //#endregion
 
-router.get('/getRecipeDisplay/:id',(req,res,next) =>{
+router.get('/getRecipeDisplay',async(req,res,next) =>{
   try{
-      res.send(getDisplay(getRecipeInfo(id)));
+      const recipe=await getRecipeInfo(req.body.id);
+      res.send(getDisplay(recipe));
+  }
+  catch (error) {
+    next(error);
+  }
+});
+
+router.get('/getRecipeFullDisplay',async(req,res,next) =>{
+  try{
+      const recipe=await getRecipeInfo(req.body.id);
+      res.send(getFullDisplay(recipe));
   }
   catch (error) {
     next(error);
@@ -63,8 +74,10 @@ router.get('/getRandomRecipes', async(req,res,next) =>{
     });
     var random=new Array(3);
     for(var i=0;i<3;i++){
-      var id=search_response.data.recipes[i].data.id;
-      random[i]=getDisplay(getRecipeInfo(id));
+      const recipe=await search_response.data.recipes[i];
+      var id=recipe.id;
+      const info=await getRecipeInfo(id);
+      random[i]=getDisplay(info);
     }
     res.send({random});
   }
