@@ -4,7 +4,6 @@ var express = require("express");
 var router = express.Router();
 const DButils = require("./sqlconnect");
 const bcrypt = require("bcrypt");
-const Recipes=require("./Recipes");
 const recFunction =require("./recipe");
 //hey hey aviel
 //#region cookie middleware
@@ -98,7 +97,7 @@ router.get('/GetFavoriteRecipes', async(req, res,next) => {
       )
     )[0];  
     if(favorites.favorites===""){
-      send("");
+      res.send("Empty");
     }
     else{
     var userFavorites=JSON.parse(favorites.favorites);
@@ -228,7 +227,7 @@ router.put('/updateFavoriteRecipes', async(req, res,next) => {
         `SELECT favorites FROM users WHERE user_id = '${req.session.user_id}'`
       )
     )[0]; 
-    if(favorites.favorites==='""'){
+    if(favorites.favorites===""){
       let recipe=[req.body.recipe_id];
       const ans=await DButils.execQuery(
         `UPDATE users SET favorites='${JSON.stringify(recipe)}' WHERE user_id = '${req.session.user_id}'`
