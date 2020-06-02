@@ -3,6 +3,7 @@ var express = require("express");
 var router = express.Router();
 const axios = require("axios");
 const recFunction =require("./recipe");
+const DButils = require("./sqlconnect");
 
 const api_domain = "https://api.spoonacular.com/recipes";
 
@@ -84,6 +85,21 @@ router.get('/getRandomRecipes', async(req,res,next) =>{
       random[i]=recFunction.getDisplay(info,await recFunction.isInFavorites(id,req.session.user_id),await recFunction.isInLastSeen(id,req.session.user_id));
     }
     res.send({random});
+  }
+  catch (error) {
+    next(error);
+  }
+});
+
+
+router.get('/getFamilyRecipes', async(req,res,next) =>{
+  try{
+    const family = (
+      await DButils.execQuery(
+      'SELECT * FROM recipes'
+      )
+    );  
+    res.send({family});
   }
   catch (error) {
     next(error);
