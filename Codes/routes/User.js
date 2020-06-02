@@ -126,8 +126,8 @@ router.get('/getLastSeen', async (req, res,next) => {
    throw { status: 401, message: "The LastSeen list is empty" };
   }
   let lastseens=JSON.parse(lastseen.lastseen);
-  let recipes=new Array(lastseens.length);
-   for(var i=0;i<3;i++){    
+  let recipes=new Array(3);
+   for(var i=0;i<recipes.length;i++){    
          const recipe =await recFunction.getRecipeInfo(lastseens[i]);
           recipes[i]=recFunction.getDisplay(recipe,recFunction.isInFavorites(recipe.id),true);        
    }

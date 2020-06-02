@@ -55,7 +55,7 @@ function getRecipeInfo(id) {
   }
 
 
-   function isInFavorites(id,next){
+   async function isInFavorites(id,next){
 	try{
 	  const favorites = (
 		  await DButils.execQuery(
