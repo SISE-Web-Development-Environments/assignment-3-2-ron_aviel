@@ -47,7 +47,7 @@ function getRecipeInfo(id) {
   }
   
   function getFullDisplay(recipe){
-	var recipeToReturn=getDisplay(recipe);
+	var recipeToReturn=getDisplay(recipe,isInFavorites(recipe.data.id),isInLastSeen(recipe.data.id));
 	recipeToReturn.servings=recipe.data.servings;
 	recipeToReturn.analyzedInstructions=recipe.data.analyzedInstructions;
 	recipeToReturn.extendedIngredients=recipe.data.extendedIngredients;
@@ -55,11 +55,11 @@ function getRecipeInfo(id) {
   }
 
 
-   async function isInFavorites(id,next){
+  async function isInFavorites(id,user_id,next,req,res){
 	try{
 	  const favorites = (
 		  await DButils.execQuery(
-			`SELECT favorites FROM users WHERE user_id = '${req.session.user_id}'`
+			`SELECT favorites FROM users WHERE user_id = '${user_id}'`
 		  )
 		)[0];  
 		if(favorites.favorites===""){
@@ -74,16 +74,17 @@ function getRecipeInfo(id) {
 	}
 	  return false;
 	}
-	catch (error) {
-	  next(error);
+	catch (err) {
+		console.error(err);
+		res.status(err.status || 500).send({ message: err.message, success: false });
 	}
   }
   
-  async function isInLastSeen(id,next){
+  async function isInLastSeen(id,user_id,next,req,res){
 	try{
-	  const favorites = (
+	  const lastseen = (
 		  await DButils.execQuery(
-			`SELECT lastseen FROM users WHERE user_id = '${req.session.user_id}'`
+			`SELECT lastseen FROM users WHERE user_id = '${user_id}'`
 		  )
 		)[0];  
 		if(lastseen.lastseen===""){
@@ -98,10 +99,13 @@ function getRecipeInfo(id) {
 	}
 	  return false;
 	}
-	catch (error) {
-	  next(error);
+	catch (err) {
+		console.error(err);
+		res.status(err.status || 500).send({ message: err.message, success: false });
 	}
   }
+
+
 
   module.exports = {getRecipeInfo,getDisplay,getRecipeInMaking,getFullDisplay,isInLastSeen,isInFavorites};
 

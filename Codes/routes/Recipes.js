@@ -47,7 +47,7 @@ router.get("/search", async (req, res, next) => {
 router.get('/getRecipeDisplay',async(req,res,next) =>{
   try{
       const recipe=await recFunction.getRecipeInfo(req.body.id);
-      res.send(recFunction.getDisplay(recipe));
+      res.send(recFunction.getDisplay(recipe,recFunction.isInFavorites,recFunction.isInLastSeen));
   }
   catch (error) {
     next(error);
@@ -78,7 +78,10 @@ router.get('/getRandomRecipes', async(req,res,next) =>{
       const recipe=await search_response.data.recipes[i];
       var id=recipe.id;
       const info=await recFunction.getRecipeInfo(id);
-      random[i]=recFunction.getDisplay(info);
+      if(req.session.user_id==undefined)
+      random[i]=recFunction.getDisplay(info,false,false);
+      else
+      random[i]=recFunction.getDisplay(info,await recFunction.isInFavorites(id,req.session.user_id),await recFunction.isInLastSeen(id,req.session.user_id));
     }
     res.send({random});
   }

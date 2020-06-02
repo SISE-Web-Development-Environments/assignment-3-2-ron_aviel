@@ -105,7 +105,7 @@ router.get('/GetFavoriteRecipes', async(req, res,next) => {
     var recipes=new Array(userFavorites.length);
      for(var i=0;i<recipes.length;i++){
            const recipe =await recFunction.getRecipeInfo(userFavorites[i]);
-           recipes[i]=recFunction.getDisplay(recipe,true,recFunction.isInLastSeen(recipe.id));
+           recipes[i]= recFunction.getDisplay(recipe,true,recFunction.isInLastSeen(recipe.data.id,req.session.user_id));
      }
     res.send({recipes});
     }
@@ -117,6 +117,8 @@ router.get('/GetFavoriteRecipes', async(req, res,next) => {
 
 router.get('/getLastSeen', async (req, res,next) => {
   try{
+    if(req.session.user_id==undefined)
+    throw new Error("User not logged in");
   const lastseen = (
     await DButils.execQuery(
       `SELECT lastseen FROM users WHERE user_id = '${req.session.user_id}'`
@@ -129,7 +131,7 @@ router.get('/getLastSeen', async (req, res,next) => {
   let recipes=new Array(3);
    for(var i=0;i<recipes.length;i++){    
          const recipe =await recFunction.getRecipeInfo(lastseens[i]);
-          recipes[i]=recFunction.getDisplay(recipe,recFunction.isInFavorites(recipe.id),true);        
+          recipes[i]=recFunction.getDisplay(recipe,recFunction.isInFavorites(recipe.data.id,req.session.user_id),true);        
    }
     res.send(recipes);
 
@@ -143,6 +145,8 @@ router.get('/getLastSeen', async (req, res,next) => {
 
 router.get('/getMeal', async (req, res) => {
   try{
+    if(req.session.user_id==undefined)
+    throw new Error("User not logged in");
     const meal = (
       await DButils.execQuery(
         `SELECT recipes_in_making FROM users WHERE user_id = '${req.session.user_id}'`
@@ -170,6 +174,8 @@ router.get('/getMeal', async (req, res) => {
 
 router.put('/updateLastSeenRecipes', async (req, res,next) => {
   try{
+    if(req.session.user_id==undefined)
+    throw new Error("User not logged in");
     const lastseen = (
       await DButils.execQuery(
         `SELECT lastseen FROM users WHERE user_id = '${req.session.user_id}'`
@@ -215,12 +221,14 @@ router.put('/updateLastSeenRecipes', async (req, res,next) => {
 
 router.put('/updateFavoriteRecipes', async(req, res,next) => {
   try{
+    if(req.session.user_id==undefined)
+    throw new Error("User not logged in");
     const favorites = (
       await DButils.execQuery(
         `SELECT favorites FROM users WHERE user_id = '${req.session.user_id}'`
       )
     )[0]; 
-    if(favorites.favorites===""){
+    if(favorites.favorites==='""'){
       let recipe=[req.body.recipe_id];
       const ans=await DButils.execQuery(
         `UPDATE users SET favorites='${JSON.stringify(recipe)}' WHERE user_id = '${req.session.user_id}'`
