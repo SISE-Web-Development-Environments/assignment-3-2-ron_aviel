@@ -129,13 +129,12 @@ router.get('/getLastSeen', async (req, res,next) => {
   }
   let lastseens=JSON.parse(lastseen.lastseen);
   let recipes=new Array(lastseens.length);
-   for(var i=0;i<recipes.length;i++){
-          if(lastseens[i]!=-1 && lastseens[i]!=undefined){
+   for(var i=0;i<3;i++){    
          const recipe =await recFunction.getRecipeInfo(lastseens[i]);
-          recipes[i]=recFunction.getDisplay(recipe);
-          }
+          recipes[i]=recFunction.getDisplay(recipe,recFunction.isInFavorites(recipe.id),true);        
    }
-  res.send({recipes});
+    res.send(recipes);
+
   }
  catch (error) {
   next(error);
@@ -161,7 +160,7 @@ router.get('/getMeal', async (req, res) => {
         var recipes=new Array(userMeal.length);
          for(var i=0;i<recipes.length;i++){
                const recipe =await recFunction.getRecipeInMaking(userMeal[i]);
-               recipes[i]=recFunction.data;
+               recipes[i]=recipe.data;
          }
         res.send({recipes});
     }
@@ -169,7 +168,6 @@ router.get('/getMeal', async (req, res) => {
   catch (error) {
     next(error);
   }
-
 });
 
 
@@ -184,43 +182,42 @@ router.put('/updateLastSeenRecipes', async (req, res,next) => {
       )
     )[0];
     let id=req.body.id;
-    const recipe =await recFunction.getRecipeInfo(id);// throw exception if not exist 
+   // const recipe =await recFunction.getRecipeInfo(id);// throw exception if not exist 
     let lastseens=new Array(1);
-    if(lastseen.lastseen===""){
+    if(lastseen.lastseen==="{}"){
       lastseens[0]=id;
     } 
     else{
     lastseens=JSON.parse(lastseen.lastseen);
-    lastseens=UpdateTheArray(id,lastseens);
+     lastseens=UpdateTheArray(id,lastseens);
     }
     const ans=await DButils.execQuery(
       `UPDATE users SET lastseen='${JSON.stringify(lastseens)}' WHERE user_id = '${req.session.user_id}'`
     )
-    res.send({ success: true, message: "Last seen list has been updated " });
+    res.send({ success: true, message: "Last seen list has been updated "});
       }
       catch (error) {
         next(error);
       }
-
 });
-async function FindIfRecipeexist(id ,arr){
+ function FindIfRecipeexist(id ,arr){
   for(let i=0;i<arr.length;i++){
-      if(id===arr[i])
-      return i;
+      if(id==arr[i])
+        return i;
   }
   return -1;
 }
 
-async function UpdateTheArray(id,arr){
+ function UpdateTheArray(id,arr){
   let index=FindIfRecipeexist(id,arr);
-  if(index===-1)
-    index=arr.length-1; 
-  for(let i=0;i<index;i++){
-      arr[i+1]=arr[i];
-    }
+  if(index==-1)
+      index =arr.length;
+  for(let i=index;i>0;i--){
+      arr[i]=arr[i-1];
+      }
   arr[0]=id;
   return arr;
-}
+ }
 
 router.put('/updateFavoriteRecipes', async(req, res,next) => {
   try{

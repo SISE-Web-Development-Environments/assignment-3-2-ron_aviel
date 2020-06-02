@@ -91,8 +91,8 @@ function getRecipeInfo(id) {
 		  return false;
 		}
 		else{
-		var userLastSeen=JSON.parse(lastseen.lastseen);
-		 for(var i=0;i<userLastSeen.length;i++){
+		let userLastSeen=JSON.parse(lastseen.lastseen);
+		 for(let i=0;i<userLastSeen.length;i++){
 			if(userLastSeen[i]===id)
 			  return true;
 		 }
