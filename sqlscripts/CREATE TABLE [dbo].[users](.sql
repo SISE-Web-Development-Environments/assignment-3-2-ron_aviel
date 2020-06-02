@@ -7,9 +7,10 @@ CREATE TABLE [dbo].[users](
 	[password] [varchar](300) NOT NULL,
 	[email] [varchar](80) ,
 	[photoLink] [varchar](1000) ,
-	[favorites][varchar](1500),
-	[lastseen][varchar](1000),
+	[favorites][varchar](8000),
+	[lastseen][varchar](8000),
 	[recipes_in_making][varchar](1500),
-	[meal_amount][integer]
+	[meal_amount][integer],
+	[last_search][varchar](8000)
 )
 

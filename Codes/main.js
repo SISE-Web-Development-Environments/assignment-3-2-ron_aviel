@@ -29,7 +29,7 @@ const recipe = require("./routes/Recipes");
 
 
 
-app.use("/User", user);
+app.use("/user", user);
 app.use("/recipeInMaking", recipeInMaking);
 app.use("/Recipes", recipe);
 app.use("/meal", meal);
