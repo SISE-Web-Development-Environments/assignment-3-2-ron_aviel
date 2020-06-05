@@ -172,12 +172,15 @@ router.get('/getMeal', async (req, res) => {
 router.get('/getLastSearch', async (req, res) => {
   try{
     if(req.session.user_id==undefined)
-    throw new Error("User not logged in");
-    lastSearch = (
+      res.send({search:""});
+    else{
+    const lastSearch = (
       await DButils.execQuery(
         `SELECT last_search FROM users WHERE user_id = '${req.session.user_id}'`
       )
     )[0];
+     }
+     res.send({search:lastSearch})
   }
   catch (error) {
     next(error);
