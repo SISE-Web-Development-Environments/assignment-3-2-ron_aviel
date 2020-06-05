@@ -11,6 +11,7 @@ CREATE TABLE [dbo].[users](
 	[lastseen][varchar](8000),
 	[recipes_in_making][varchar](1500),
 	[meal_amount][integer],
-	[last_search][varchar](8000)
+	[last_search][varchar](8000),
+
 )
 
