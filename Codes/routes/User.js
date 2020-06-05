@@ -134,7 +134,6 @@ router.get('/getLastSeen', async (req, res,next) => {
           recipes[i]=recFunction.getDisplay(recipe,recFunction.isInFavorites(recipe.data.id,req.session.user_id),true);        
    }
     res.send(recipes);
-
   }
  catch (error) {
   next(error);
@@ -220,6 +219,7 @@ router.put('/updateLastSeenRecipes', async (req, res,next) => {
     let id=req.body.id;
    // const recipe =await recFunction.getRecipeInfo(id);// throw exception if not exist 
     let lastseens=new Array(1);
+    var anss=lastseen.lastseen;
     if(lastseen.lastseen===""){
       lastseens[0]=id;
     } 
@@ -230,7 +230,7 @@ router.put('/updateLastSeenRecipes', async (req, res,next) => {
     const ans=await DButils.execQuery(
       `UPDATE users SET lastseen='${JSON.stringify(lastseens)}' WHERE user_id = '${req.session.user_id}'`
     )
-    res.send({ success: true, message: "Last seen list has been updated "});
+    res.send(lastseens);
       }
       catch (error) {
         next(error);
