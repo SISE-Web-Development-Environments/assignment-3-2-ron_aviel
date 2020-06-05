@@ -169,6 +169,24 @@ router.get('/getMeal', async (req, res) => {
   }
 });
 
+router.get('/getMealAmount', async (req, res) => {
+  try{
+    if(req.session.user_id==undefined)
+    throw new Error("User not logged in");
+    else{
+    const mealAmount = (
+      await DButils.execQuery(
+        `SELECT meal_amount FROM users WHERE user_id = '${req.session.user_id}'`
+      )
+    )[0];
+     }
+     res.send({amount:mealAmount})
+  }
+  catch (error) {
+    next(error);
+  }
+});
+
 router.get('/getLastSearch', async (req, res) => {
   try{
     if(req.session.user_id==undefined)
@@ -217,6 +235,8 @@ router.put('/updateLastSeenRecipes', async (req, res,next) => {
         next(error);
       }
 });
+
+
  function FindIfRecipeexist(id ,arr){
   for(let i=0;i<arr.length;i++){
       if(id==arr[i])
@@ -268,7 +288,57 @@ router.put('/updateFavoriteRecipes', async(req, res,next) => {
   catch (error) {
     next(error);
   }
-});//
+});
+
+
+router.put('/addToMeal', async(req, res,next) => {
+  try{
+    if(req.session.user_id==undefined)
+    throw new Error("User not logged in");
+    const meal = (
+      await DButils.execQuery(
+        `SELECT recipes_in_making FROM users WHERE user_id = '${req.session.user_id}'`
+      )
+    )[0];  
+    if(meal.recipes_in_making===""){
+      let recipe=[req.body.recipe_id];
+      const ans=await DButils.execQuery(
+        `UPDATE users SET favorites='${JSON.stringify(recipe)}',meal_amount=1 WHERE user_id = '${req.session.user_id}'`
+      )
+  }
+    else{
+      let newMeal=JSON.parse(meal.recipes_in_making);
+      newMeal[newMeal.length]=req.body.recipe_id;
+      await DButils.execQuery(
+        `UPDATE users SET favorites='${JSON.stringify(newMeal)}',meal_amount='${newMeal.length}' WHERE user_id = '${req.session.user_id}'`
+      )
+    }
+        const user = (
+        await DButils.execQuery(
+          `SELECT recipes_in_making FROM users WHERE user_id = '${req.session.user_id}'`
+        ))[0];
+        res.send(user);
+        
+  }
+  catch (error) {
+    next(error);
+  }
+});
+
+
+router.delete('/deleteMeal', async(req, res,next) => {
+  try{
+    if(req.session.user_id==undefined)
+    throw new Error("User not logged in");
+    const ans=await DButils.execQuery(
+      `UPDATE users SET favorites='',meal_amount=0 WHERE user_id = '${req.session.user_id}'`
+    )
+        
+  }
+  catch (error) {
+    next(error);
+  }
+});
 
 
 module.exports = router;

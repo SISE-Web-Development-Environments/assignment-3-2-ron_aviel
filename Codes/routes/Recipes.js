@@ -32,12 +32,14 @@ router.get("/search", async (req, res, next) => {
         apiKey: process.env.spooncular_apiKey
       }
     });
-    let recipes = await Promise.all(
-      search_response.data.results.map((recipe_raw) =>
-        recFunction.getDisplay(recFunction.getRecipeInfo(recipe_raw.id))
-      )
-    );
-    recipes = recipes.map((recipe) => recipe.data);
+    let recipes=search_response.data.results;
+    let recipesArr=new Array(recipes.length);
+    for(let i=0;i<recipes.length;i++){
+      let recipe=await recFunction.getRecipeInfo(recipes[i].id);
+      let favorites=await recFunction.isInFavorites(recipes[i].id);
+      let lastSeen=await recFunction.isInLastSeen(recipes[i].id);
+      recipesArr[i]=await recFunction.getDisplay(recipe,favorites,lastSeen);
+    }
     if(req.session.user_id!=undefined){
       const lastSearch=await DButils.execQuery(
         `UPDATE users SET last_search='${query}' WHERE user_id = '${req.session.user_id}'`
