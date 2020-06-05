@@ -23,16 +23,13 @@ app.use(express.static(path.join(__dirname, "public"))); //To serve static files
 var port = process.env.PORT || "5000";
 //#endregion
 const user = require("./routes/User");
-const recipeInMaking = require("./routes/recipeInMaking");
-const meal = require("./routes/meal");
 const recipe = require("./routes/Recipes");
 
 
 
 app.use("/user", user);
-app.use("/recipeInMaking", recipeInMaking);
 app.use("/Recipes", recipe);
-app.use("/meal", meal);
+
 
 app.use(function (err, req, res, next) {
   console.error(err);

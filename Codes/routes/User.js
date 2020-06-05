@@ -42,7 +42,7 @@ router.post("/Register", async (req, res, next) => {
     );
     await DButils.execQuery(
       `INSERT INTO users VALUES (default, '${req.body.username}', '${req.body.firstname}' , '${req.body.lastname}','${req.body.country}',
-      '${hash_password}','${req.body.email}','${req.body.photoLink}', '', '' ,'',0 ) ` 
+      '${hash_password}','${req.body.email}','${req.body.photoLink}', '', '' ,'',0,'') ` 
     );
     res.status(201).send({ message: "user created", success: true });
   } catch (error) {
@@ -163,6 +163,21 @@ router.get('/getMeal', async (req, res) => {
          }
         res.send({recipes});
     }
+  }
+  catch (error) {
+    next(error);
+  }
+});
+
+router.get('/getLastSearch', async (req, res) => {
+  try{
+    if(req.session.user_id==undefined)
+    throw new Error("User not logged in");
+    lastSearch = (
+      await DButils.execQuery(
+        `SELECT last_search FROM users WHERE user_id = '${req.session.user_id}'`
+      )
+    )[0];
   }
   catch (error) {
     next(error);

@@ -34,15 +34,21 @@ router.get("/search", async (req, res, next) => {
     });
     let recipes = await Promise.all(
       search_response.data.results.map((recipe_raw) =>
-      recFunction.getRecipeInfo(recipe_raw.id)
+        recFunction.getDisplay(recFunction.getRecipeInfo(recipe_raw.id))
       )
     );
     recipes = recipes.map((recipe) => recipe.data);
-    res.send({ data: recipes });
+    if(req.session.user_id!=undefined){
+      const lastSearch=await DButils.execQuery(
+        `UPDATE users SET last_search='${query}' WHERE user_id = '${req.session.user_id}'`
+      )
+    }
+      res.send({ data: recipes});
   } catch (error) {
     next(error);
   }
 });
+
 //#endregion
 
 router.get('/getRecipeDisplay',async(req,res,next) =>{
