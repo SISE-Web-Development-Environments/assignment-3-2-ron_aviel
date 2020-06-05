@@ -45,7 +45,7 @@ router.get("/search", async (req, res, next) => {
         `UPDATE users SET last_search='${query}' WHERE user_id = '${req.session.user_id}'`
       )
     }
-      res.send({ data: recipes});
+      res.send({ data: recipesArr});
   } catch (error) {
     next(error);
   }
