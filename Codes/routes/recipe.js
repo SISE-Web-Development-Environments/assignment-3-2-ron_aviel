@@ -57,6 +57,8 @@ function getRecipeInfo(id) {
 
   async function isInFavorites(id,user_id,next,req,res){
 	try{
+		if(req.session.user_id==undefined)
+			return false;
 	  const favorites = (
 		  await DButils.execQuery(
 			`SELECT favorites FROM users WHERE user_id = '${user_id}'`
@@ -82,6 +84,8 @@ function getRecipeInfo(id) {
   
   async function isInLastSeen(id,user_id,next,req,res){
 	try{
+		if(req.session.user_id==undefined)
+		return false;
 	  const lastseen = (
 		  await DButils.execQuery(
 			`SELECT lastseen FROM users WHERE user_id = '${user_id}'`
