@@ -45,7 +45,6 @@ function getRecipeInfo(id) {
 	let lastseen=lastSeen
 	var recipeToReturn=getDisplay(recipe,favorite,lastseen);
 	recipeToReturn.servings=recipe.data.servings;
-	recipeToReturn.analyzedInstructions=recipe.data.analyzedInstructions;
 	recipeToReturn.extendedIngredients=recipe.data.extendedIngredients;
 	return recipeToReturn;
   }

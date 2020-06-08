@@ -24,11 +24,13 @@ var port = process.env.PORT || "5000";
 //#endregion
 const user = require("./routes/User");
 const recipe = require("./routes/Recipes");
+const meal = require("./routes/Meal");
 
 
 
 app.use("/user", user);
 app.use("/Recipes", recipe);
+app.use("/Meal", meal);
 
 
 app.use(function (err, req, res, next) {

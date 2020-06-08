@@ -35,9 +35,17 @@ router.get("/search", async (req, res, next) => {
     let recipes=search_response.data.results;
     let recipesArr=new Array(recipes.length);
     for(let i=0;i<recipes.length;i++){
+      let favorites;
+      let lastSeen;
+      if(req.session.user_id==undefined){
+        favorites=false;
+        lastSeen=false;
+      }
+      else{
+         favorites=await recFunction.isInFavorites(recipes[i].id,req.session.user_id);
+         lastSeen=await recFunction.isInLastSeen(recipes[i].id,req.session.user_id);
+      }
       let recipe=await recFunction.getRecipeInfo(recipes[i].id);
-      let favorites=await recFunction.isInFavorites(recipes[i].id);
-      let lastSeen=await recFunction.isInLastSeen(recipes[i].id);
       recipesArr[i]=await recFunction.getDisplay(recipe,favorites,lastSeen);
     }
     if(req.session.user_id!=undefined){
@@ -77,7 +85,13 @@ router.get('/getRecipeFullDisplay',async(req,res,next) =>{
        lastSeen=await recFunction.isInLastSeen(req.body.id,req.session.user_id);
       }
       let ans= await recFunction.getFullDisplay(recipe,favorites,lastSeen);
-      res.send(ans);
+      var instructions=await axios.get(`${api_domain}/${req.body.id}/analyzedInstructions`,{
+        params: {
+          stepBreakdown: false,
+          apiKey: process.env.spooncular_apiKey
+        }
+      });
+      res.send({recipe:ans,instructions:instructions.data});
   }
   catch (error) {
     next(error);
@@ -125,9 +139,10 @@ router.get('/getFamilyRecipes', async(req,res,next) =>{
   }
 });
 
-router.get('/getRecipeMaking/:id',(req, res,next) => {
+router.get('/getRecipeMaking', async(req, res,next) => {
   try{  
-      res.send(recFunction.getRecipeInMaking(id));
+      const recipe=await recFunction.getRecipeInMaking(req.body.id);
+      res.send({recipe:recipe.data});
   }
  catch (error) {
   next(error);

@@ -172,24 +172,6 @@ router.get('/getMeal', async (req, res) => {
   }
 });
 
-router.get('/getMealAmount', async (req, res) => {
-  try{
-    if(req.session.user_id==undefined)
-    throw new Error("User not logged in");
-    else{
-    const mealAmount = (
-      await DButils.execQuery(
-        `SELECT meal_amount FROM users WHERE user_id = '${req.session.user_id}'`
-      )
-    )[0];
-     }
-     res.send({amount:mealAmount})
-  }
-  catch (error) {
-    next(error);
-  }
-});
-
 router.get('/getLastSearch', async (req, res) => {
   try{
     if(req.session.user_id==undefined)
@@ -307,14 +289,14 @@ router.put('/addToMeal', async(req, res,next) => {
     if(meal.recipes_in_making===""){
       let recipe=[req.body.recipe_id];
       const ans=await DButils.execQuery(
-        `UPDATE users SET favorites='${JSON.stringify(recipe)}',meal_amount=1 WHERE user_id = '${req.session.user_id}'`
+        `UPDATE users SET recipes_in_making='${JSON.stringify(recipe)}' WHERE user_id = '${req.session.user_id}'`
       )
   }
     else{
       let newMeal=JSON.parse(meal.recipes_in_making);
       newMeal[newMeal.length]=req.body.recipe_id;
       await DButils.execQuery(
-        `UPDATE users SET favorites='${JSON.stringify(newMeal)}',meal_amount='${newMeal.length}' WHERE user_id = '${req.session.user_id}'`
+        `UPDATE users SET recipes_in_making='${JSON.stringify(newMeal)}' WHERE user_id = '${req.session.user_id}'`
       )
     }
         const user = (
