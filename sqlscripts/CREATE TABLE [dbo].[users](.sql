@@ -9,9 +9,6 @@ CREATE TABLE [dbo].[users](
 	[photoLink] [varchar](1000) ,
 	[favorites][varchar](8000),
 	[lastseen][varchar](8000),
-	
-	
 	[last_search][varchar](8000),
-
 )
 

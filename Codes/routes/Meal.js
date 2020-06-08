@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const recFunction =require("./recipe");
 
 
-router.get('/getMeal', async (req, res) => {
+router.get('/getMeal', async (req, res,next) => {
   try{
     if(req.session.user_id==undefined)
         throw new Error("User not logged in");
@@ -14,15 +14,16 @@ router.get('/getMeal', async (req, res) => {
         `SELECT meal_array FROM meals WHERE user_id = '${req.session.user_id}'`
       )
     )[0];  
-    if(meal.recipes_in_making===""){
+    if(meal.meal_array===""){
         res.send({data:"empty"});
     }
     else{
-        var userMeal=JSON.parse(meal.meal_array);
-        var recipes=new Array(userMeal.length);
-         for(var i=0;i<recipes.length;i++){
-               const recipe =await recFunction.getRecipeInMaking(userMeal[i]);
-               recipes[i]=recipe.data;
+        let userMeal=JSON.parse(meal.meal_array);
+        let recipes=new Array(userMeal.length);
+         for(let i=0;i<recipes.length;i++){
+                const info=await recFunction.getRecipeInfo(userMeal[i]);
+               const recipe =await recFunction.getDisplay(info,false,false);
+               recipes[i]=recipe;
          }
         res.send({recipes});
     }
@@ -63,10 +64,10 @@ router.put('/addToMeal', async(req, res,next) => {
       await DButils.execQuery(
         `SELECT meal_array FROM meals WHERE user_id = '${req.session.user_id}'`
       )
-    )[0];  
+    )[0];
     let recipe;
     if(meal.meal_array===""){
-      recipe==[req.body.recipe_id];
+      recipe=[req.body.recipe_id];
       }
     else{
       recipe=JSON.parse(meal.meal_array);
@@ -75,7 +76,7 @@ router.put('/addToMeal', async(req, res,next) => {
     await DButils.execQuery(
       `UPDATE meals SET meal_array='${JSON.stringify(recipe)}' WHERE user_id = '${req.session.user_id}'`
     )  
-        res.send(recipe);    
+        res.send({recipe:recipe});    
   }
   catch (error) {
     next(error);
@@ -87,7 +88,7 @@ router.put('/switchMealOrder',async(req, res,next) => {
     throw new Error("User not logged in");
     const mealsarray = (
       await DButils.execQuery(
-        `SELECT meal_array FROM users meals user_id = '${req.session.user_id}'`
+        `SELECT meal_array FROM meals where user_id = '${req.session.user_id}'`
       )
     )[0];
    // const recipe =await recFunction.getRecipeInfo(id);// throw exception if not exist 
@@ -106,9 +107,7 @@ router.put('/switchMealOrder',async(req, res,next) => {
     const ans=await DButils.execQuery(
       `UPDATE meals SET meal_array='${JSON.stringify(mealsarr)}' WHERE user_id = '${req.session.user_id}'`
     )
-    // const anss=await DButils.execQuery(
-    //   `UPDATE users SET mealsamount='${JSON.stringify(lastseens)}' WHERE user_id = '${req.session.user_id}'`
-    // )
+
     res.send(mealsarr);
       }
       catch (error) {
@@ -121,7 +120,7 @@ router.put('/switchMealOrder',async(req, res,next) => {
       throw new Error("User not logged in");
       const mealsarray = (
         await DButils.execQuery(
-          `SELECT meal_array FROM users meals user_id = '${req.session.user_id}'`
+          `SELECT meal_array FROM meals where user_id = '${req.session.user_id}'`
         )
       )[0];
      
@@ -137,12 +136,50 @@ router.put('/switchMealOrder',async(req, res,next) => {
        mealsarr=UpdateTheArray(id,mealsarr);
       }
       const ans=await DButils.execQuery(
-        `UPDATE meals SET meals_array='${JSON.stringify(mealsarr)}' WHERE user_id = '${req.session.user_id}'`
+        `UPDATE meals SET meal_array='${JSON.stringify(mealsarr)}' WHERE user_id = '${req.session.user_id}'`
       )
-      // const anss=await DButils.execQuery(
-      //   `UPDATE users SET mealsamount='${JSON.stringify(lastseens)}' WHERE user_id = '${req.session.user_id}'`
-      // )
+
       res.send(mealsarr);
+        }
+        catch (error) {
+          next(error);
+        }
+      });
+
+
+      router.delete('/deleteRecipeFromMeal', async(req, res,next) => {
+        try{
+          if(req.session.user_id==undefined)
+          throw new Error("User not logged in");
+          const mealsarray = (
+            await DButils.execQuery(
+              `SELECT meal_array FROM meals where user_id = '${req.session.user_id}'`
+            )
+          )[0];
+        
+          if(mealsarray.meal_array===""){
+            throw new Error("the meal is empty so you cant switch between recipes ");
+          } 
+          let recipe=JSON.parse(mealsarray.meal_array);
+          let index=FindIfRecipeexist(req.body.id,recipe);
+          if(index===-1){
+              res.send({data:"recipe doesnt exist"})
+          }
+          else{
+            let newRecipes=new Array(recipe.length-1);
+            let count=0;
+            for(let i=0;i<recipe.length;i++){
+                if(i==index)
+                    continue;
+                newRecipes[count]=recipe[i];
+                count++;
+            }
+            const ans=await DButils.execQuery(
+                `UPDATE meals SET meal_array='${JSON.stringify(newRecipes)}' WHERE user_id = '${req.session.user_id}'`
+              )
+            res.send({data:newRecipes});
+          }
+          
         }
         catch (error) {
           next(error);
@@ -155,8 +192,9 @@ router.delete('/deleteMeal', async(req, res,next) => {
     if(req.session.user_id==undefined)
     throw new Error("User not logged in");
     const ans=await DButils.execQuery(
-      `UPDATE meals SET meal_array='',WHERE user_id = '${req.session.user_id}'`
+      `UPDATE meals SET meal_array=''WHERE user_id = '${req.session.user_id}'`
     )
+    res.send({data:"meal deleted"});
   }
   catch (error) {
     next(error);

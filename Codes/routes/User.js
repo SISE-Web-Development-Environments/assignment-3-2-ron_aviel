@@ -42,7 +42,16 @@ router.post("/Register", async (req, res, next) => {
     );
     await DButils.execQuery(
       `INSERT INTO users VALUES (default, '${req.body.username}', '${req.body.firstname}' , '${req.body.lastname}','${req.body.country}',
-      '${hash_password}','${req.body.email}','${req.body.photoLink}', '', '' ,'',0,'') ` 
+      '${hash_password}','${req.body.email}','${req.body.photoLink}', '', '' ,'') ` 
+    );
+    const user = (
+      await DButils.execQuery(
+        `SELECT * FROM users WHERE username = '${req.body.username}'`
+      )
+    )[0];
+
+    await DButils.execQuery(
+      `INSERT INTO meals VALUES (default, '${user.user_id}', '' , '')` 
     );
     res.status(201).send({ message: "user created", success: true });
   } catch (error) {

@@ -1,2 +1,2 @@
-select * from dbo.users 
+select * from dbo.meals 
 go
