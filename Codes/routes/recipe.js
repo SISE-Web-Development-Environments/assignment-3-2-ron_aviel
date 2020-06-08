@@ -35,23 +35,19 @@ function getRecipeInfo(id) {
 	recipeToReturn.aggregateLikes=recipe.data.aggregateLikes;
 	recipeToReturn.vegan=recipe.data.vegan;
 	recipeToReturn.glutenFree=recipe.data.glutenFree;
-	if(favorites)
-	  recipeToReturn.favorites="true";
-	else
-	  recipeToReturn.favorites="false";
-	if(lastSeen)
-	  recipeToReturn.lastSeen="true";
-	else
-	  recipeToReturn.lastSeen="false";
+	recipeToReturn.favorites=favorites;
+	recipeToReturn.lastseen=lastSeen;
 	return recipeToReturn;
   }
   
-  function getFullDisplay(recipe){
-	var recipeToReturn=getDisplay(recipe,isInFavorites(recipe.data.id),isInLastSeen(recipe.data.id));
+	function getFullDisplay(recipe,favorites,lastSeen){
+	let favorite=favorites;
+	let lastseen=lastSeen
+	var recipeToReturn=getDisplay(recipe,favorite,lastseen);
 	recipeToReturn.servings=recipe.data.servings;
 	recipeToReturn.analyzedInstructions=recipe.data.analyzedInstructions;
 	recipeToReturn.extendedIngredients=recipe.data.extendedIngredients;
-	return recipeToReturn
+	return recipeToReturn;
   }
 
 

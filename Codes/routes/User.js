@@ -104,7 +104,8 @@ router.get('/GetFavoriteRecipes', async(req, res,next) => {
     var recipes=new Array(userFavorites.length);
      for(var i=0;i<recipes.length;i++){
            const recipe =await recFunction.getRecipeInfo(userFavorites[i]);
-           recipes[i]= recFunction.getDisplay(recipe,true,recFunction.isInLastSeen(recipe.data.id,req.session.user_id));
+           const lastSeen=await recFunction.isInLastSeen(recipe.data.id,req.session.user_id);
+           recipes[i]= recFunction.getDisplay(recipe,true,lastSeen);
      }
     res.send({recipes});
     }
@@ -131,7 +132,9 @@ router.get('/getLastSeen', async (req, res,next) => {
   let recipes=new Array(Math.min(lastseens.length,3));
    for(var i=0;i<recipes.length;i++){    
          const recipe =await recFunction.getRecipeInfo(lastseens[i]);
-          recipes[i]=recFunction.getDisplay(recipe,recFunction.isInFavorites(recipe.data.id,req.session.user_id),true);        
+         const lastSeen=await recFunction.isInLastSeen(recipe.data.id,req.session.user_id);
+         const favorites=await recFunction.isInFavorites(recipe.data.id,req.session.user_id);
+         recipes[i]=recFunction.getDisplay(recipe,favorites,lastSeen);        
    }
     res.send(recipes);
   }
