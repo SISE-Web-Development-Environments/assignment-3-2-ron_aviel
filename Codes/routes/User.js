@@ -51,7 +51,7 @@ router.post("/Register", async (req, res, next) => {
     )[0];
 
     await DButils.execQuery(
-      `INSERT INTO meals VALUES (default, '${user.user_id}', '' , '')` 
+      `INSERT INTO meals VALUES (default, '${user.user_id}', '')` 
     );
     res.status(201).send({ message: "user created", success: true });
   } catch (error) {

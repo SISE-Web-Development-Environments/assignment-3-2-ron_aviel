@@ -1,2 +1,2 @@
-select * from dbo.meals 
-go
+Select * from dbo.familyRecipes
+GO
