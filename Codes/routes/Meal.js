@@ -11,14 +11,14 @@ router.get('/getMeal', async (req, res) => {
         throw new Error("User not logged in");
     const meal = (
       await DButils.execQuery(
-        `SELECT recipes_in_making FROM users WHERE user_id = '${req.session.user_id}'`
+        `SELECT meal_array FROM meals WHERE user_id = '${req.session.user_id}'`
       )
     )[0];  
     if(meal.recipes_in_making===""){
         res.send({data:"empty"});
     }
     else{
-        var userMeal=JSON.parse(meal.recipes_in_making);
+        var userMeal=JSON.parse(meal.meal_array);
         var recipes=new Array(userMeal.length);
          for(var i=0;i<recipes.length;i++){
                const recipe =await recFunction.getRecipeInMaking(userMeal[i]);
@@ -61,28 +61,21 @@ router.put('/addToMeal', async(req, res,next) => {
     throw new Error("User not logged in");
     const meal = (
       await DButils.execQuery(
-        `SELECT recipes_in_making FROM users WHERE user_id = '${req.session.user_id}'`
+        `SELECT meal_array FROM meals WHERE user_id = '${req.session.user_id}'`
       )
     )[0];  
-    if(meal.recipes_in_making===""){
-      let recipe=[req.body.recipe_id];
-      const ans=await DButils.execQuery(
-        `UPDATE users SET recipes_in_making='${JSON.stringify(recipe)}' WHERE user_id = '${req.session.user_id}'`
-      )
-  }
+    let recipe;
+    if(meal.meal_array===""){
+      recipe==[req.body.recipe_id];
+      }
     else{
-      let newMeal=JSON.parse(meal.recipes_in_making);
-      newMeal[newMeal.length]=req.body.recipe_id;
-      await DButils.execQuery(
-        `UPDATE users SET recipes_in_making='${JSON.stringify(newMeal)}' WHERE user_id = '${req.session.user_id}'`
-      )
+      recipe=JSON.parse(meal.meal_array);
+      recipe[recipe.length]=req.body.recipe_id;
     }
-        const user = (
-        await DButils.execQuery(
-          `SELECT recipes_in_making FROM users WHERE user_id = '${req.session.user_id}'`
-        ))[0];
-        res.send(user);
-        
+    await DButils.execQuery(
+      `UPDATE meals SET meal_array='${JSON.stringify(recipe)}' WHERE user_id = '${req.session.user_id}'`
+    )  
+        res.send(recipe);    
   }
   catch (error) {
     next(error);
@@ -106,12 +99,12 @@ router.put('/switchMealOrder',async(req, res,next) => {
     mealsarr=JSON.parse(mealsarray.meal_array);
     if(mealsarr.length===1)
         throw new Error("the meal is only 1 recipe  so you cant switch between recipes ");
-    let temp=req.body.id1;
-    mealsarr[req.body.id1]=req.body.id2;
+    let temp=mealsarr[req.body.id1];
+    mealsarr[req.body.id1]=mealsarr[req.body.id2];
     mealsarr[req.body.id2]=temp;
     }
     const ans=await DButils.execQuery(
-      `UPDATE meals SET meals_array='${JSON.stringify(mealsarr)}' WHERE user_id = '${req.session.user_id}'`
+      `UPDATE meals SET meal_array='${JSON.stringify(mealsarr)}' WHERE user_id = '${req.session.user_id}'`
     )
     // const anss=await DButils.execQuery(
     //   `UPDATE users SET mealsamount='${JSON.stringify(lastseens)}' WHERE user_id = '${req.session.user_id}'`
@@ -131,14 +124,16 @@ router.put('/switchMealOrder',async(req, res,next) => {
           `SELECT meal_array FROM users meals user_id = '${req.session.user_id}'`
         )
       )[0];
-      let id=req.body.id;
+     
      // const recipe =await recFunction.getRecipeInfo(id);// throw exception if not exist 
-      let mealsarr=new Array(1);
+      let mealsarr;
       if(mealsarray.meal_array===""){
-       mealsarr[0]=id;
+        throw new Error("the meal is empty so you cant switch between recipes ");
       } 
       else{
+       
       mealsarr=JSON.parse(mealsarray.meal_array);
+      let id=mealsarr[req.body.id];
        mealsarr=UpdateTheArray(id,mealsarr);
       }
       const ans=await DButils.execQuery(
@@ -160,14 +155,11 @@ router.delete('/deleteMeal', async(req, res,next) => {
     if(req.session.user_id==undefined)
     throw new Error("User not logged in");
     const ans=await DButils.execQuery(
-      `UPDATE users SET favorites='',meal_amount=0 WHERE user_id = '${req.session.user_id}'`
+      `UPDATE meals SET meal_array='',WHERE user_id = '${req.session.user_id}'`
     )
-        
   }
   catch (error) {
     next(error);
   }
 });
-
-
 module.exports = router;
