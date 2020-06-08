@@ -325,6 +325,71 @@ router.put('/addToMeal', async(req, res,next) => {
     next(error);
   }
 });
+router.put('/switchMealOrder',async(req, res,next) => {
+  try{
+    if(req.session.user_id==undefined)
+    throw new Error("User not logged in");
+    const mealsarray = (
+      await DButils.execQuery(
+        `SELECT meal_array FROM users meals user_id = '${req.session.user_id}'`
+      )
+    )[0];
+   // const recipe =await recFunction.getRecipeInfo(id);// throw exception if not exist 
+    
+    if(mealsarray.meal_array===""){
+      throw new Error("the meal is empty so you cant switch between recipes ");
+    } 
+    else{
+    mealsarr=JSON.parse(mealsarray.meal_array);
+    if(mealsarr.length===1)
+        throw new Error("the meal is only 1 recipe  so you cant switch between recipes ");
+    let temp=req.body.id1;
+    mealsarr[req.body.id1]=req.body.id2;
+    mealsarr[req.body.id2]=temp;
+    }
+    const ans=await DButils.execQuery(
+      `UPDATE meals SET meals_array='${JSON.stringify(mealsarr)}' WHERE user_id = '${req.session.user_id}'`
+    )
+    // const anss=await DButils.execQuery(
+    //   `UPDATE users SET mealsamount='${JSON.stringify(lastseens)}' WHERE user_id = '${req.session.user_id}'`
+    // )
+    res.send(mealsarr);
+      }
+      catch (error) {
+        next(error);
+      }
+    });
+  router.put('/switchRecipeToFirst',async(req, res,next) => {
+    try{
+      if(req.session.user_id==undefined)
+      throw new Error("User not logged in");
+      const mealsarray = (
+        await DButils.execQuery(
+          `SELECT meal_array FROM users meals user_id = '${req.session.user_id}'`
+        )
+      )[0];
+      let id=req.body.id;
+     // const recipe =await recFunction.getRecipeInfo(id);// throw exception if not exist 
+      let mealsarr=new Array(1);
+      if(mealsarray.meal_array===""){
+       mealsarr[0]=id;
+      } 
+      else{
+      mealsarr=JSON.parse(mealsarray.meal_array);
+       mealsarr=UpdateTheArray(id,mealsarr);
+      }
+      const ans=await DButils.execQuery(
+        `UPDATE meals SET meals_array='${JSON.stringify(mealsarr)}' WHERE user_id = '${req.session.user_id}'`
+      )
+      // const anss=await DButils.execQuery(
+      //   `UPDATE users SET mealsamount='${JSON.stringify(lastseens)}' WHERE user_id = '${req.session.user_id}'`
+      // )
+      res.send(mealsarr);
+        }
+        catch (error) {
+          next(error);
+        }
+      });
 
 
 router.delete('/deleteMeal', async(req, res,next) => {
