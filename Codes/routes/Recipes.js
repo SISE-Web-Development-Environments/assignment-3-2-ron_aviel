@@ -127,12 +127,36 @@ router.get('/getRandomRecipes', async(req,res,next) =>{
 
 router.get('/getFamilyRecipes', async(req,res,next) =>{
   try{
+    if(req.session.user_id==undefined){
+      res.send({});
+    }
+    else{
     const family = (
       await DButils.execQuery(
-      'SELECT * FROM recipes'
+      `SELECT * FROM familyRecipes WHERE user_id = '${req.session.user_id}'`
       )
     );  
     res.send({family});
+    }
+  }
+  catch (error) {
+    next(error);
+  }
+});
+
+router.get('/getPersonalRecipes', async(req,res,next) =>{
+  try{
+    if(req.session.user_id==undefined){
+      res.send({});
+    }
+    else{
+    const personal = (
+      await DButils.execQuery(
+      `SELECT * FROM personalRecipes WHERE user_id = '${req.session.user_id}'`
+      )
+    );  
+    res.send({personal});
+    }
   }
   catch (error) {
     next(error);
