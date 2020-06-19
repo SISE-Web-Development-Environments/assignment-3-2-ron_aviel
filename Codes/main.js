@@ -21,13 +21,13 @@ app.use(
 app.use(express.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
 app.use(express.static(path.join(__dirname, "public"))); //To serve static files such as images, CSS files, and JavaScript files
 
-// const corsConfig = {
-//   origin: true,
-//   credentials: true
-// };
+const corsConfig = {
+  origin: true,
+  credentials: true
+};
 
-// app.use(cors(corsConfig));
-// app.options("*", cors(corsConfig));
+app.use(cors(corsConfig));
+app.options("*", cors(corsConfig));
 
 var port = process.env.PORT || "5000";
 //#endregion
