@@ -1,5 +1,6 @@
 require("dotenv").config();
 //#region express configures
+var cors =require("cors");
 var express = require("express");
 var path = require("path");
 var logger = require("morgan");
@@ -19,6 +20,7 @@ app.use(
 );
 app.use(express.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
 app.use(express.static(path.join(__dirname, "public"))); //To serve static files such as images, CSS files, and JavaScript files
+
 const corsConfig = {
   origin: true,
   credentials: true
