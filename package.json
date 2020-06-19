@@ -1,5 +1,5 @@
 {
-  "name": "assignment-3-2-ron_aviel",
+  "name": "assignment-3-2-ron_aviel-1",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -15,7 +15,6 @@
     "modules": "^0.4.0",
     "morgan": "^1.10.0",
     "mssql": "^6.2.0",
-    "node": "^14.2.0",
     "path": "^0.12.7"
   },
   "devDependencies": {},
