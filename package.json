@@ -2,7 +2,7 @@
   "name": "assignment-3-2-ron_aviel",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "index.js",
   "dependencies": {
     "axios": "^0.19.2",
     "bcrypt": "^4.0.1",
@@ -15,7 +15,7 @@
     "modules": "^0.4.0",
     "morgan": "^1.10.0",
     "mssql": "^6.2.0",
-    "Node": "^14.2.0",
+    "node": "^14.2.0",
     "path": "^0.12.7"
   },
   "devDependencies": {},
