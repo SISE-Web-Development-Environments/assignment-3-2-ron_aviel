@@ -19,7 +19,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "Start_main": "nodemon Codes/main.js"
+    "Start_main": "nodemon Codes/main.js",
+    "Start_main_node": "node Codes/main.js"
   },
   "repository": {
     "type": "git",
