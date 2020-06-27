@@ -116,7 +116,7 @@ router.get('/GetFavoriteRecipes', async(req, res,next) => {
            const lastSeen=await recFunction.isInLastSeen(recipe.data.id,req.session.user_id);
            recipes[i]= recFunction.getDisplay(recipe,true,lastSeen);
      }
-    res.send({recipes});
+    res.send({recipes:recipes});
     }
   }
    catch (error) {
@@ -145,7 +145,7 @@ router.get('/getLastSeen', async (req, res,next) => {
          const favorites=await recFunction.isInFavorites(recipe.data.id,req.session.user_id);
          recipes[i]=recFunction.getDisplay(recipe,favorites,lastSeen);        
    }
-    res.send(recipes);
+    res.send({recipes:recipes});
   }
  catch (error) {
   next(error);
