@@ -117,7 +117,7 @@ router.get('/getRandomRecipes', async(req,res,next) =>{
       else
       random[i]=recFunction.getDisplay(info,await recFunction.isInFavorites(id,req.session.user_id),await recFunction.isInLastSeen(id,req.session.user_id));
     }
-    res.send({random});
+    res.send({random:recipes});
   }
   catch (error) {
     next(error);
