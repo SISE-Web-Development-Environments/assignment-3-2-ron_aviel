@@ -73,7 +73,7 @@ router.get('/getRecipeDisplay',async(req,res,next) =>{
 
 router.get('/getRecipeFullDisplay',async(req,res,next) =>{
   try{
-      const recipe=await recFunction.getRecipeInfo(req.body.id);
+      const recipe=await recFunction.getRecipeInfo(req.query.id);
       let favorites;
       let lastSeen;
       if(req.session.user_id==undefined){
@@ -81,13 +81,13 @@ router.get('/getRecipeFullDisplay',async(req,res,next) =>{
          lastSeen=false;
       }
       else{
-       favorites=await recFunction.isInFavorites(req.body.id,req.session.user_id);
-       lastSeen=await recFunction.isInLastSeen(req.body.id,req.session.user_id);
+       favorites=await recFunction.isInFavorites(req.query.id,req.session.user_id);
+       lastSeen=await recFunction.isInLastSeen(req.query.id,req.session.user_id);
       }
       let ans= await recFunction.getFullDisplay(recipe,favorites,lastSeen);
-      var instructions=await axios.get(`${api_domain}/${req.body.id}/analyzedInstructions`,{
+      var instructions=await axios.get(`${api_domain}/${req.query.id}/analyzedInstructions`,{
         params: {
-          stepBreakdown: false,
+          stepBreakdown: true,
           apiKey: process.env.spooncular_apiKey
         }
       });

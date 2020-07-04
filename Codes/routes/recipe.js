@@ -63,7 +63,7 @@ function getRecipeInfo(id) {
 		else{
 		var userFavorites=JSON.parse(favorites.favorites);
 		 for(var i=0;i<userFavorites.length;i++){
-			if(userFavorites[i]===id)
+			if(userFavorites[i]==id)
 			  return true;
 		 }
 	}
@@ -87,7 +87,7 @@ function getRecipeInfo(id) {
 		else{
 		let userLastSeen=JSON.parse(lastseen.lastseen);
 		 for(let i=0;i<userLastSeen.length;i++){
-			if(userLastSeen[i]===id)
+			if(userLastSeen[i]==id)
 			  return true;
 		 }
 	}

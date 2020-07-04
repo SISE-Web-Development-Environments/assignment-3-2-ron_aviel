@@ -24,7 +24,6 @@
   "scripts": {
     "start": "node Codes/main.js"
   },
-  
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SISE-Web-Development-Environments/assignment-3-2-ron_aviel.git"
