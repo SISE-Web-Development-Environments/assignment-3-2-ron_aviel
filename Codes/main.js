@@ -28,8 +28,8 @@ const corsConfig = {
   credentials: true,
 };
 
-app.use(cors(corsConfig));
-app.options("*", cors(corsConfig));
+// app.use(cors());
+ app.options("*", cors(corsConfig));
 
 var port = process.env.PORT || "5000";
 //#endregion
