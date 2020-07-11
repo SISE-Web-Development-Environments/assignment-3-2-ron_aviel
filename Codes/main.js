@@ -25,11 +25,11 @@ app.use(express.static(path.join(__dirname, "public"))); //To serve static files
 
 const corsConfig = {
   origin: true,
-  credentials: true,
+  credentials: true
 };
 
-// app.use(cors());
- app.options("*", cors(corsConfig));
+ app.use(cors(corsConfig));
+ //app.options("*", cors(corsConfig));
 
 var port = process.env.PORT || "5000";
 //#endregion
