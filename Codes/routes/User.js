@@ -128,7 +128,7 @@ router.get('/GetFavoriteRecipes', async(req, res,next) => {
 router.get('/getLastSeen', async (req, res,next) => {
   try{
     if(req.session.user_id==undefined)
-    throw new Error("User not logged in");
+      res.send({});
   const lastseen = (
     await DButils.execQuery(
       `SELECT lastseen FROM users WHERE user_id = '${req.session.user_id}'`
